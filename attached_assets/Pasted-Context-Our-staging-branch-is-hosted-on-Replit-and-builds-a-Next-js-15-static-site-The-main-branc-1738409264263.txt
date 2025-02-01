@@ -1,0 +1,105 @@
+Context:
+
+Our staging branch is hosted on Replit and builds a Next.js 15 static site.
+The main branch uses Tina Cloud, storing .mdx files in /content (synced to staging).
+We want to replace any in‑memory data references with real MDX file reading (via fs + gray-matter), and then push the generated out folder back to main so Vercel can host it (if desired).
+Objectives:
+
+Update Next.js Data-Fetching in /lib/get-static-data.ts (or similar) so it loads .mdx files from /content/pages and /content/posts.
+Remove any references to placeholder or in‑memory data.
+Create a GitHub Action at .github/workflows/sync-out-to-main.yml so that whenever the out folder changes on staging, those changes are pushed back to main.
+Test that the Next.js build (e.g., npm run build && next export) successfully outputs to out and triggers the new GitHub Action.
+Instructions for the Replit Agent (Staging):
+
+Open /lib/get-static-data.ts:
+
+Remove or comment out any references to in‑memory data objects.
+Implement functions like getAllPages() or getAllPosts() that read .mdx files from content/pages or content/posts using fs, path, and gray-matter. For example:
+ts
+Copy
+Edit
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+
+export interface PageData {
+  slug: string;
+  title: string;
+  description: string;
+  content: string;
+}
+
+const pagesDir = path.join(process.cwd(), 'content', 'pages');
+const postsDir = path.join(process.cwd(), 'content', 'posts');
+
+export function getAllPages(): PageData[] {
+  const filenames = fs.readdirSync(pagesDir);
+  return filenames.map((filename) => {
+    const fullPath = path.join(pagesDir, filename);
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    const { data, content } = matter(fileContents);
+    return {
+      slug: data.slug || filename.replace(/\.mdx$/, ''),
+      title: data.title,
+      description: data.description,
+      content,
+    } as PageData;
+  });
+}
+
+// Similarly for getAllPosts() if needed
+Adjust Any Pages/Routes:
+
+If we have pages that previously relied on in‑memory data, update them to call getAllPages() or getAllPosts().
+Create .github/workflows/sync-out-to-main.yml:
+In the staging branch, create this file with the following content:
+
+yaml
+Copy
+Edit
+name: Sync Static Build (out) from Staging to Main
+on:
+  push:
+    branches:
+      - staging
+    paths:
+      - "out/**"
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Staging Branch
+        uses: actions/checkout@v3
+        with:
+          ref: staging
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+
+      - name: Create temporary branch for syncing
+        run: git checkout -b sync-out
+
+      - name: Switch to Main Branch
+        run: |
+          git fetch origin main
+          git checkout main
+
+      - name: Copy the out Folder from Staging
+        run: |
+          git checkout sync-out -- out
+          git add out
+          git commit -m "Sync static build from staging" || echo "No changes to commit"
+
+      - name: Push Changes to Main
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+Build & Test:
+
+Run npm run build && next export (or your specified commands) to confirm the app outputs to out and the new GitHub Action triggers on changes to out/**.
+Once pushed, verify the “Sync Static Build” workflow runs on GitHub and that it merges the out folder into main.
+Commit & Push:
+
+Save all changes, commit them, and push to staging with a commit message like "Switch to MDX-based content & add sync-out-to-main workflow".
