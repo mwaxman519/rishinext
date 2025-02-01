@@ -8,21 +8,23 @@ import Page from "./collection/page";
 
 const config = defineConfig({
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID!,
-  branch:
-    process.env.NEXT_PUBLIC_TINA_BRANCH! || // custom branch env override
-    process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF! || // Vercel branch env
-    process.env.HEAD!, // Netlify branch env
+  // Force Tina Cloud to use the main branch.
+  branch: "main",
   token: process.env.TINA_TOKEN!,
   media: {
     tina: {
-      publicFolder: "out", // ✅ Change from "public" to "out" for static files
+      // Keep these as-is if your media assets remain in public/uploads.
+      publicFolder: "public",
       mediaRoot: "uploads",
     },
   },
   build: {
-    publicFolder: "out", // ✅ Ensures TinaCMS serves static pages from `/out`
+    // Change this from "public" to "out" so Tina Cloud
+    // knows where your static site is generated.
+    publicFolder: "out",
+    // This will output the Tina admin UI to out/admin.
     outputFolder: "admin",
-    basePath: nextConfig.basePath?.replace(/^\//, '') || '', // The base path of the app (could be /blog)
+    basePath: nextConfig.basePath?.replace(/^\//, '') || '',
   },
   schema: {
     collections: [Page, Post, Author, Global],
