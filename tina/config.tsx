@@ -14,20 +14,14 @@ const config = defineConfig({
     process.env.HEAD!, // Netlify branch env
   token: process.env.TINA_TOKEN!,
   media: {
-    // If you wanted cloudinary do this
-    // loadCustomStore: async () => {
-    //   const pack = await import("next-tinacms-cloudinary");
-    //   return pack.TinaCloudCloudinaryMediaStore;
-    // },
-    // this is the config for the tina cloud media store
     tina: {
-      publicFolder: "public",
+      publicFolder: "out", // ✅ Change from "public" to "out" for static files
       mediaRoot: "uploads",
     },
   },
   build: {
-    publicFolder: "public", // The public asset folder for your framework
-    outputFolder: "admin", // within the public folder
+    publicFolder: "out", // ✅ Ensures TinaCMS serves static pages from `/out`
+    outputFolder: "admin",
     basePath: nextConfig.basePath?.replace(/^\//, '') || '', // The base path of the app (could be /blog)
   },
   schema: {
