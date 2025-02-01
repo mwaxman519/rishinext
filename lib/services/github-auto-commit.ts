@@ -14,6 +14,11 @@ export class GitHubAutoCommitService {
     if (typeof window === 'undefined') return; // Only run on client-side
     if (this.initialized) return;
 
+    if (!process.env.GITHUB_TOKEN) {
+      console.error('GITHUB_TOKEN not found');
+      return;
+    }
+
     this.initialized = true;
     this.lastCommitTime = Date.now();
     console.log('GitHub auto-commit service initialized');
@@ -41,6 +46,7 @@ export class GitHubAutoCommitService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
         },
         body: JSON.stringify({ 
           message,
@@ -56,31 +62,8 @@ export class GitHubAutoCommitService {
       console.log('Successfully committed and pushed changes to staging');
     } catch (error) {
       console.error('Failed to commit and push changes:', error);
+      throw error; // Propagate error to hook for proper error handling
     }
-  }
-
-  /**
-   * Setup auto-commit interval
-   * @param seconds How often to check and commit changes (default: 10 seconds)
-   */
-  static setupAutoCommit(seconds: number = 10) {
-    if (typeof window === 'undefined') return; // Only run on client-side
-
-    if (!this.initialized) {
-      this.initialize();
-    }
-
-    // Clear any existing interval
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
-
-    // Set up new interval
-    this.intervalId = setInterval(() => {
-      this.commitAndPush(`Auto-commit: Periodic save at ${new Date().toISOString()}`);
-    }, seconds * 1000);
-
-    console.log(`Auto-commit configured for every ${seconds} seconds`);
   }
 
   /**

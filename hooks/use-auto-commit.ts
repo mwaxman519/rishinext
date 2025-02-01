@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { toast } from '@/hooks/use-toast';
+import { GitHubAutoCommitService } from '@/lib/services/github-auto-commit';
 
 interface AutoSaveOptions {
   key?: string; // localStorage key
@@ -20,15 +21,23 @@ export function useAutoSave({
   onError,
 }: AutoSaveOptions) {
   const timerRef = useRef<NodeJS.Timer>();
-  const lastSaveRef = useRef<string>('');
+  const lastSaveRef = useRef<string>();
+  const lastSyncRef = useRef<string>();
 
-  // Save to localStorage
-  const saveToStorage = useCallback(() => {
+  // Initialize GitHub service
+  useEffect(() => {
+    GitHubAutoCommitService.initialize();
+    return () => GitHubAutoCommitService.stopAutoCommit();
+  }, []);
+
+  // Save to localStorage and sync to GitHub
+  const saveAndSync = useCallback(async () => {
     try {
       const serializedData = JSON.stringify(data);
 
       // Only save if data has changed
       if (serializedData !== lastSaveRef.current) {
+        // Save to localStorage
         localStorage.setItem(key, serializedData);
         lastSaveRef.current = serializedData;
 
@@ -37,10 +46,22 @@ export function useAutoSave({
           title: "Changes saved",
           description: "Your changes have been saved locally",
         });
+
+        // Sync to GitHub if enough time has passed
+        const now = Date.now();
+        if (!lastSyncRef.current || now - parseInt(lastSyncRef.current) >= interval) {
+          await GitHubAutoCommitService.commitAndPush('Auto-save: Update content');
+          lastSyncRef.current = now.toString();
+
+          toast({
+            title: "Changes synced",
+            description: "Your changes have been synced to GitHub",
+          });
+        }
       }
     } catch (error) {
-      console.error('Failed to save to localStorage:', error);
-      onError?.(error instanceof Error ? error : new Error('Failed to save'));
+      console.error('Failed to save or sync:', error);
+      onError?.(error instanceof Error ? error : new Error('Failed to save or sync'));
 
       toast({
         title: "Save failed",
@@ -48,7 +69,7 @@ export function useAutoSave({
         variant: "destructive",
       });
     }
-  }, [data, key, onError]);
+  }, [data, key, interval, onError]);
 
   // Start auto-save timer
   const startAutoSave = useCallback(() => {
@@ -58,19 +79,14 @@ export function useAutoSave({
 
     if (enabled) {
       // Initial save
-      saveToStorage();
+      saveAndSync();
 
       // Set up interval
       timerRef.current = setInterval(() => {
-        saveToStorage();
+        saveAndSync();
       }, interval);
     }
-  }, [enabled, interval, saveToStorage]);
-
-  // Manual save function
-  const save = useCallback(() => {
-    saveToStorage();
-  }, [saveToStorage]);
+  }, [enabled, interval, saveAndSync]);
 
   // Load data from localStorage
   const loadFromStorage = useCallback(() => {
@@ -97,7 +113,7 @@ export function useAutoSave({
   }, [startAutoSave]);
 
   return {
-    save, // Manual save function
+    save: saveAndSync, // Manual save function
     load: loadFromStorage, // Manual load function
     startAutoSave,
     stopAutoSave: useCallback(() => {
