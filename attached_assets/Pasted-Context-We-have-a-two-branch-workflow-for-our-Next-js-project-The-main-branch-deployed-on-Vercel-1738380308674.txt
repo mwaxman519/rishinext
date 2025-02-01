@@ -1,0 +1,70 @@
+Context:
+We have a two‑branch workflow for our Next.js project:
+
+The main branch (deployed on Vercel) is running Tina Cloud (with inline editing) and manages content as MDX files stored in a newly created /content folder. This branch also contains our Tina configuration (in /tina) and the CMS.
+The staging branch (hosted on Replit) runs our Next.js 15 static site generator (SSG) which builds the site into an out folder.
+Content is now stored in /content, with subfolders like /content/posts and /content/pages holding MDX files. GitHub Actions are set up so that any changes on main (including changes in /content and /tina) are synced to staging, and after a build on staging the updated static build (the out folder) is pushed back to main.
+
+Objective for the Staging Branch (Replit):
+
+Update the Data-Fetching Code:
+Modify the file lib/get-static-data.ts so that it no longer uses the old in‑memory data layer but instead reads MDX files from the /content folder. For example, for posts, it should iterate over files in /content/posts, parse each file using the gray-matter package to extract YAML frontmatter (with fields such as slug, title, and description) and the Markdown/MDX content.
+
+Ensure Consistency with the New Content Structure:
+Confirm that the directory structure on staging mirrors the main branch (i.e. it has a /content folder with the proper subdirectories). If the /content folder isn’t present on staging, create it (or copy it from main).
+
+Rebuild the Static Site:
+Verify that when the Next.js SSG builds on staging (using the updated get-static-data.ts), it reads the MDX files from /content and outputs the static site to the out folder correctly.
+
+Testing:
+Run a build locally on the staging branch and confirm that pages (for example, blog posts from /content/posts) are rendered with their updated content.
+
+Instructions/Steps:
+
+a. Modify lib/get-static-data.ts:
+Update the file so it uses Node’s fs and path modules along with the gray-matter package. For example, implement something similar to:
+
+ts
+Copy
+// lib/get-static-data.ts
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+
+export interface PostData {
+  slug: string;
+  title: string;
+  description: string;
+  content: string;
+}
+
+const postsDirectory = path.join(process.cwd(), 'content', 'posts');
+
+export function getAllPosts(): PostData[] {
+  const filenames = fs.readdirSync(postsDirectory);
+  return filenames.map(filename => {
+    const fullPath = path.join(postsDirectory, filename);
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    const { data, content } = matter(fileContents);
+    return {
+      slug: data.slug,
+      title: data.title,
+      description: data.description,
+      content,
+    } as PostData;
+  });
+}
+b. Verify Directory Structure:
+Ensure that the staging branch contains the /content folder with subdirectories (e.g., /content/posts and /content/pages). If not, create them and add sample MDX files for testing.
+
+c. Build and Test:
+Run your Next.js build command (e.g., npm run build and then next export) on staging and verify that the static site is generated correctly in the out folder with pages populated from your MDX files.
+
+d. Output Confirmation:
+Once updated and tested, confirm that the static build on staging reflects changes from the /content folder and that everything works as expected.
+
+Note:
+The main branch already manages inline editing with Tina Cloud, so you do not need to install or modify Tina-related code on staging. Your focus on staging is solely to ensure that the SSG uses the new file-based content source.
+
+Please perform these tasks and confirm that the staging branch now builds the static site using the MDX files from the /content folder.
+

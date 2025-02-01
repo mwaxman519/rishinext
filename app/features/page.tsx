@@ -2,12 +2,32 @@
 
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import { LoggerService } from "@/lib/services/logger-service";
 
 export default function FeaturesPage() {
+  const { toast } = useToast();
+
   const testError = async () => {
-    const res = await fetch('/api/test-error');
-    if (!res.ok) {
-      throw new Error('Failed to fetch');
+    try {
+      const res = await fetch('/api/test-error');
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'An error occurred while testing error handling');
+      }
+    } catch (error) {
+      LoggerService.log('error', 'Test error triggered:', {
+        message: error.message,
+        type: 'test_error'
+      });
+
+      toast({
+        title: "Error Test Successful",
+        description: "The error was caught and handled properly",
+        variant: "destructive",
+      });
+
+      throw error; // Re-throw to trigger error boundary
     }
   };
 
@@ -29,6 +49,7 @@ export default function FeaturesPage() {
               <li>Type-safe development with TypeScript</li>
               <li>Modern UI with Tailwind CSS</li>
               <li>Responsive design</li>
+              <li>Comprehensive error handling and reporting</li>
             </ul>
 
             <div className="mt-8">

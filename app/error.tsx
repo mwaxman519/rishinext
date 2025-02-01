@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertCircle } from "lucide-react";
+import { LoggerService } from "@/lib/services/logger-service";
 
 /**
  * Error Component
@@ -17,8 +18,12 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log the error to an error reporting service
-    console.error('Error:', error);
+    // Log the error to our logging service
+    LoggerService.log('error', 'Route segment error:', {
+      message: error.message,
+      digest: error.digest,
+      stack: error.stack
+    });
   }, [error]);
 
   return (
@@ -30,15 +35,18 @@ export default function Error({
         <h2 className="text-2xl font-bold text-foreground">
           Something went wrong
         </h2>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
           {error.message || 'An unexpected error occurred'}
           {error.digest && (
             <span className="block mt-1 text-xs">Error ID: {error.digest}</span>
           )}
         </p>
-        <div className="mt-6">
+        <div className="mt-6 flex gap-4 justify-center">
           <Button onClick={reset} variant="outline">
             Try again
+          </Button>
+          <Button onClick={() => window.location.href = '/'} variant="default">
+            Go to homepage
           </Button>
         </div>
       </div>
