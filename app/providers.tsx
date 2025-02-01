@@ -5,8 +5,7 @@ import { ThemeProvider } from "next-themes";
 import { LazyMotion, domAnimation, m } from "framer-motion";
 import { URLCleaner } from "@/components/url-cleaner";
 import { LayoutProvider } from "@/components/layout/layout-context";
-import { useAutoCommit } from "@/hooks/use-auto-commit";
-import { useToast } from "@/hooks/use-toast";
+import { useAutoSave } from "@/hooks/use-auto-commit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 interface ProvidersProps {
@@ -23,18 +22,14 @@ const queryClient = new QueryClient({
 });
 
 export function Providers({ children }: ProvidersProps) {
-  const { toast } = useToast();
-
-  // Initialize auto-commit with error handling
-  useAutoCommit({
+  // Initialize auto-save with a mock data object
+  // In real usage, this would be your actual app state
+  useAutoSave({
+    key: 'app_state',
     interval: 10000, // 10 seconds
     enabled: true,
-    onError: (error) => {
-      toast({
-        title: "Auto-commit failed",
-        description: error.message,
-        variant: "destructive",
-      });
+    data: {
+      lastModified: new Date().toISOString(),
     },
   });
 

@@ -1,88 +1,106 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { toast } from '@/hooks/use-toast';
 
-interface AutoCommitOptions {
-  interval?: number;
+interface AutoSaveOptions {
+  key?: string; // localStorage key
+  interval?: number; // in milliseconds
   enabled?: boolean;
+  data: any; // data to save
   onError?: (error: Error) => void;
 }
 
-interface CommitResponse {
-  status: 'success' | 'error';
-  message: string;
-  timestamp?: string;
-  changes?: string[];
-  error?: string;
-}
+const DEFAULT_KEY = 'auto_save_content';
+const DEFAULT_INTERVAL = 10000; // 10 seconds
 
-async function commitChanges(message?: string): Promise<CommitResponse> {
-  const response = await fetch('/api/git', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      message,
-      timestamp: new Date().toISOString(),
-    }),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to commit changes');
-  }
-
-  return response.json();
-}
-
-export function useAutoCommit({
-  interval = 10000, // 10 seconds default
+export function useAutoSave({
+  key = DEFAULT_KEY,
+  interval = DEFAULT_INTERVAL,
   enabled = true,
+  data,
   onError,
-}: AutoCommitOptions = {}) {
+}: AutoSaveOptions) {
   const timerRef = useRef<NodeJS.Timer>();
-  
-  // Use React Query for managing commit state and caching
-  const { mutate, isLoading, isError, error, data } = useMutation({
-    mutationFn: commitChanges,
-    onError: (error: Error) => {
-      console.error('Auto-commit failed:', error);
-      onError?.(error);
-    },
-  });
+  const lastSaveRef = useRef<string>('');
 
-  const startAutoCommit = useCallback(() => {
+  // Save to localStorage
+  const saveToStorage = useCallback(() => {
+    try {
+      const serializedData = JSON.stringify(data);
+
+      // Only save if data has changed
+      if (serializedData !== lastSaveRef.current) {
+        localStorage.setItem(key, serializedData);
+        lastSaveRef.current = serializedData;
+
+        // Show success toast
+        toast({
+          title: "Changes saved",
+          description: "Your changes have been saved locally",
+        });
+      }
+    } catch (error) {
+      console.error('Failed to save to localStorage:', error);
+      onError?.(error instanceof Error ? error : new Error('Failed to save'));
+
+      toast({
+        title: "Save failed",
+        description: "Failed to save your changes",
+        variant: "destructive",
+      });
+    }
+  }, [data, key, onError]);
+
+  // Start auto-save timer
+  const startAutoSave = useCallback(() => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
 
     if (enabled) {
+      // Initial save
+      saveToStorage();
+
+      // Set up interval
       timerRef.current = setInterval(() => {
-        mutate('Auto-commit: Periodic save');
+        saveToStorage();
       }, interval);
     }
-  }, [enabled, interval, mutate]);
+  }, [enabled, interval, saveToStorage]);
 
-  // Manual commit function
-  const commit = useCallback((message?: string) => {
-    mutate(message);
-  }, [mutate]);
+  // Manual save function
+  const save = useCallback(() => {
+    saveToStorage();
+  }, [saveToStorage]);
 
+  // Load data from localStorage
+  const loadFromStorage = useCallback(() => {
+    try {
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (error) {
+      console.error('Failed to load from localStorage:', error);
+      onError?.(error instanceof Error ? error : new Error('Failed to load'));
+    }
+    return null;
+  }, [key, onError]);
+
+  // Setup auto-save on mount
   useEffect(() => {
-    startAutoCommit();
+    startAutoSave();
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
     };
-  }, [startAutoCommit]);
+  }, [startAutoSave]);
 
   return {
-    commit,
-    isLoading,
-    isError,
-    error,
-    lastCommit: data,
-    startAutoCommit,
-    stopAutoCommit: useCallback(() => {
+    save, // Manual save function
+    load: loadFromStorage, // Manual load function
+    startAutoSave,
+    stopAutoSave: useCallback(() => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = undefined;

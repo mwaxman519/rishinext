@@ -41,7 +41,7 @@ async function execCommand(command: string): Promise<string> {
 }
 
 // Health check endpoint
-export async function GET() {
+export async function GET(request: NextRequest) {
   console.log('GET /api/git - Health check started');
 
   try {
@@ -71,8 +71,8 @@ export async function POST(request: NextRequest) {
   console.log('POST /api/git - Commit request started');
 
   try {
-    // Parse and validate request body
-    const body = await request.json().catch(() => ({}));
+    // Parse request body using the NextRequest API
+    const body: CommitRequest = await request.json();
     const result = commitRequestSchema.safeParse(body);
 
     if (!result.success) {
