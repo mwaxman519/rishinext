@@ -1,80 +1,46 @@
-
-import { Octokit } from '@octokit/rest';
-import { exec } from 'node:child_process';
-import { LoggerService } from './logger-service';
-
 /**
  * Service to handle automatic GitHub commits and pushes
  */
 export class GitHubAutoCommitService {
-  private static octokit: Octokit;
   private static initialized = false;
 
   /**
-   * Initialize the GitHub service with the provided token
+   * Initialize the GitHub service
    */
   static initialize() {
-    if (typeof window !== 'undefined') return; // Skip on client-side
-    
-    if (!process.env.GITHUB_TOKEN) {
-      LoggerService.log('error', 'GitHub token not found in environment');
-      return;
-    }
-
-    this.octokit = new Octokit({
-      auth: process.env.GITHUB_TOKEN
-    });
+    if (typeof window === 'undefined') return; // Only run on client-side
     this.initialized = true;
-    LoggerService.log('info', 'GitHub auto-commit service initialized');
+    console.log('GitHub auto-commit service initialized');
   }
 
   /**
    * Commit and push changes to the staging branch
    */
   static async commitAndPush(message: string = 'Auto-commit changes') {
-    if (typeof window !== 'undefined') return; // Skip on client-side
-    
+    if (typeof window === 'undefined') return; // Only run on client-side
+
     if (!this.initialized) {
-      LoggerService.log('error', 'GitHub service not initialized');
+      console.error('GitHub service not initialized');
       return;
     }
 
     try {
-      // Configure git user
-      const gitConfig = `
-        git config user.name "${process.env.REPL_OWNER || 'Replit User'}"
-        git config user.email "${process.env.REPL_OWNER || 'user'}@repl.it"
-      `;
-      await this.execCommand(gitConfig);
-
-      // Add all changes
-      await this.execCommand('git add .');
-
-      // Create commit
-      await this.execCommand(`git commit -m "${message}"`);
-
-      // Push to staging branch
-      await this.execCommand('git push origin staging || git push origin HEAD:staging');
-
-      LoggerService.log('info', 'Successfully committed and pushed changes to staging');
-    } catch (error) {
-      LoggerService.log('error', `Failed to commit and push changes: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-  }
-
-  /**
-   * Execute a shell command and handle errors
-   */
-  private static execCommand(command: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      exec(command, (error: Error | null) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        resolve();
+      const response = await fetch('/api/git', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message }),
       });
-    });
+
+      if (!response.ok) {
+        throw new Error(`Failed to commit changes: ${response.statusText}`);
+      }
+
+      console.log('Successfully committed and pushed changes to staging');
+    } catch (error) {
+      console.error('Failed to commit and push changes:', error);
+    }
   }
 
   /**
@@ -82,8 +48,8 @@ export class GitHubAutoCommitService {
    * @param intervalMinutes How often to check and commit changes (default: 5 minutes)
    */
   static setupAutoCommit(intervalMinutes: number = 5) {
-    if (typeof window !== 'undefined') return; // Skip on client-side
-    
+    if (typeof window === 'undefined') return; // Only run on client-side
+
     if (!this.initialized) {
       this.initialize();
     }
@@ -92,6 +58,6 @@ export class GitHubAutoCommitService {
       this.commitAndPush('Auto-commit: Periodic save of changes');
     }, intervalMinutes * 60 * 1000);
 
-    LoggerService.log('info', `Auto-commit configured for every ${intervalMinutes} minutes`);
+    console.log(`Auto-commit configured for every ${intervalMinutes} minutes`);
   }
 }
