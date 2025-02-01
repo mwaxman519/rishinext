@@ -1,4 +1,6 @@
+
 import { Octokit } from '@octokit/rest';
+import { exec } from 'node:child_process';
 import { LoggerService } from './logger-service';
 
 /**
@@ -12,6 +14,8 @@ export class GitHubAutoCommitService {
    * Initialize the GitHub service with the provided token
    */
   static initialize() {
+    if (typeof window !== 'undefined') return; // Skip on client-side
+    
     if (!process.env.GITHUB_TOKEN) {
       LoggerService.log('error', 'GitHub token not found in environment');
       return;
@@ -28,6 +32,8 @@ export class GitHubAutoCommitService {
    * Commit and push changes to the staging branch
    */
   static async commitAndPush(message: string = 'Auto-commit changes') {
+    if (typeof window !== 'undefined') return; // Skip on client-side
+    
     if (!this.initialized) {
       LoggerService.log('error', 'GitHub service not initialized');
       return;
@@ -59,8 +65,7 @@ export class GitHubAutoCommitService {
   /**
    * Execute a shell command and handle errors
    */
-  private static async execCommand(command: string): Promise<void> {
-    const { exec } = require('child_process');
+  private static execCommand(command: string): Promise<void> {
     return new Promise((resolve, reject) => {
       exec(command, (error: Error | null) => {
         if (error) {
@@ -77,6 +82,8 @@ export class GitHubAutoCommitService {
    * @param intervalMinutes How often to check and commit changes (default: 5 minutes)
    */
   static setupAutoCommit(intervalMinutes: number = 5) {
+    if (typeof window !== 'undefined') return; // Skip on client-side
+    
     if (!this.initialized) {
       this.initialize();
     }
