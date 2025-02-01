@@ -1,10 +1,10 @@
 query {
   globalDocument(relativePath: "main.mdx") {
-    ...GlobalParts
+    ...UserGlobalParts
   }
 }
 
-fragment GlobalParts on Global {
+fragment UserGlobalParts on Global {
   siteTitle
   tagline
   footerText
