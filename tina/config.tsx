@@ -62,7 +62,6 @@ const collections = [
         type: "reference",
         name: "author",
         label: "Author",
-        // Points to the 'author' collection below
         collections: ["author"],
       },
       {
@@ -93,61 +92,4 @@ const collections = [
       {
         type: "string",
         name: "bio",
-        label: "Bio",
-      },
-    ],
-  },
-  {
-    // GLOBAL COLLECTION
-    // If you added a file like content/global/main.mdx, you can store site-wide data here
-    label: "Global Settings",
-    name: "global",
-    path: "content/global",
-    format: "mdx",
-    // Tells Tina to treat this as a single global doc
-    ui: {
-      global: true,
-    },
-    fields: [
-      {
-        type: "string",
-        name: "siteTitle",
-        label: "Site Title",
-      },
-      {
-        type: "string",
-        name: "tagline",
-        label: "Tagline",
-      },
-      {
-        type: "string",
-        name: "footerText",
-        label: "Footer Text",
-      },
-      // You can add any other fields you want site-wide
-    ],
-  },
-];
-
-export default defineConfig({
-  clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID!,
-  branch:
-    process.env.NEXT_PUBLIC_TINA_BRANCH ||
-    process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF ||
-    process.env.HEAD!,
-  token: process.env.TINA_TOKEN!,
-  media: {
-    tina: {
-      publicFolder: "public",
-      mediaRoot: "uploads",
-    },
-  },
-  build: {
-    publicFolder: "admin",
-    outputFolder: "admin",
-    basePath: nextConfig.basePath?.replace(/^\//, "") || "",
-  },
-  schema: {
-    collections,
-  },
-});
+        label
