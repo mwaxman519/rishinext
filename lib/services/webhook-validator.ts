@@ -19,7 +19,6 @@ export class WebhookValidationError extends Error {
 /**
  * WebhookValidator service handles all webhook-related validation
  * Ensures security and integrity of incoming webhook requests
- * Differentiates between content and schema changes
  */
 export class WebhookValidator {
   /**
@@ -56,13 +55,13 @@ export class WebhookValidator {
   }
 
   /**
-   * Validates webhook payload and determines if it's a schema change
+   * Validates webhook payload
    * 
    * @param payload - Webhook request payload
-   * @returns boolean indicating if this is a schema change
+   * @returns boolean indicating if payload is valid
    * @throws WebhookValidationError if payload is invalid
    */
-  static validatePayload(payload: any): { isValid: boolean; isSchemaChange: boolean } {
+  static validatePayload(payload: any): { isValid: boolean } {
     LoggerService.log('info', 'Validating webhook payload...');
 
     if (!payload) {
@@ -82,7 +81,7 @@ export class WebhookValidator {
           400
         );
       }
-      return { isValid: true, isSchemaChange: true }; // Manual builds are treated as schema changes
+      return { isValid: true };
     }
 
     // Validate GitHub webhook payload structure
@@ -94,24 +93,7 @@ export class WebhookValidator {
       );
     }
 
-    // Check for schema changes in the commit
-    const isSchemaChange = payload.commits?.some((commit: any) => {
-      const modifiedFiles = [
-        ...(commit.added || []),
-        ...(commit.modified || []),
-        ...(commit.removed || [])
-      ];
-
-      return modifiedFiles.some(file => 
-        file.startsWith('tina/') || // TinaCMS schema files
-        file.includes('schema.') || // Any schema definition files
-        file.includes('config.') || // Configuration files
-        file.endsWith('.schema.json') || // JSON schema files
-        file.endsWith('.graphql') // GraphQL schema files
-      );
-    }) || false;
-
-    LoggerService.log('info', `Webhook payload validation successful. Schema change: ${isSchemaChange}`);
-    return { isValid: true, isSchemaChange };
+    LoggerService.log('info', 'Webhook payload validation successful');
+    return { isValid: true };
   }
 }
