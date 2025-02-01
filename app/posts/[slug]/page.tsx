@@ -1,5 +1,6 @@
 import { Container } from '@/components/layout/container';
 import { getStaticData, getStaticDataBySlug, getAllSlugs } from '@/lib/get-static-data';
+import { MDXContent } from '@/components/mdx/mdx-components';
 import { notFound } from 'next/navigation';
 
 // Force static generation
@@ -30,7 +31,7 @@ async function getData(slug: string) {
 
 export default async function Post({ params }: { params: { slug: string } }) {
   const data = await getData(params.slug);
-  
+
   if (!data) {
     notFound();
   }
@@ -51,7 +52,7 @@ export default async function Post({ params }: { params: { slug: string } }) {
             {post.description}
           </p>
         )}
-        <div dangerouslySetInnerHTML={{ __html: post.content }} />
+        <MDXContent code={post.content} />
       </article>
     </Container>
   );
