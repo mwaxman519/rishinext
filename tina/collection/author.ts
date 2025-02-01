@@ -1,23 +1,24 @@
-import type { Collection } from "tinacms";
-
-const Author: Collection = {
+export default {
   label: "Authors",
   name: "author",
+  // Create a folder for authors (you may need to create /content/authors)
   path: "content/authors",
-  format: "md",
+  format: "mdx",
   fields: [
     {
       type: "string",
-      label: "Name",
       name: "name",
-      isTitle: true,
-      required: true,
+      label: "Name",
+    },
+    {
+      type: "string",
+      name: "bio",
+      label: "Bio",
     },
     {
       type: "image",
-      label: "Avatar",
       name: "avatar",
+      label: "Avatar",
     },
   ],
 };
-export default Author;
