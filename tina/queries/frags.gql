@@ -1,5 +1,11 @@
-fragment LayoutQueryFragment on Query {
-  global(relativePath: "index.json") {
+query {
+  globalDocument(relativePath: "main.mdx") {
     ...GlobalParts
   }
+}
+
+fragment GlobalParts on Global {
+  siteTitle
+  tagline
+  footerText
 }
