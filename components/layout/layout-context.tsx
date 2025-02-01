@@ -1,62 +1,32 @@
-"use client";
-import React, { useState, useContext } from "react";
-import { GlobalQuery } from "../../tina/__generated__/types";
+import React, { createContext, useContext, ReactNode } from 'react';
 
-interface LayoutState {
-  globalSettings: GlobalQuery["global"];
-  setGlobalSettings: React.Dispatch<
-    React.SetStateAction<GlobalQuery["global"]>
-  >;
-  pageData: {};
-  setPageData: React.Dispatch<React.SetStateAction<{}>>;
-  theme: GlobalQuery["global"]["theme"];
+interface LayoutContextType {
+  theme: {
+    color?: 'blue' | 'teal' | 'green' | 'red' | 'pink' | 'purple' | 'orange' | 'yellow';
+  };
 }
 
-const LayoutContext = React.createContext<LayoutState | undefined>(undefined);
-
-export const useLayout = () => {
-  const context = useContext(LayoutContext);
-  return (
-    context || {
-      theme: {
-        color: "blue",
-        darkMode: "default",
-      },
-      globalSettings: undefined,
-      pageData: undefined,
-    }
-  );
-};
+const LayoutContext = createContext<LayoutContextType>({ theme: {} });
 
 interface LayoutProviderProps {
-  children: React.ReactNode;
-  globalSettings: GlobalQuery["global"];
-  pageData: {};
+  children: ReactNode;
+  theme?: {
+    color?: 'blue' | 'teal' | 'green' | 'red' | 'pink' | 'purple' | 'orange' | 'yellow';
+  };
 }
 
-export const LayoutProvider: React.FC<LayoutProviderProps> = ({
-  children,
-  globalSettings: initialGlobalSettings,
-  pageData: initialPageData,
-}) => {
-  const [globalSettings, setGlobalSettings] = useState<GlobalQuery["global"]>(
-    initialGlobalSettings
-  );
-  const [pageData, setPageData] = useState<{}>(initialPageData);
-
-  const theme = globalSettings.theme;
-
+export function LayoutProvider({ children, theme = {} }: LayoutProviderProps) {
   return (
-    <LayoutContext.Provider
-      value={{
-        globalSettings,
-        setGlobalSettings,
-        pageData,
-        setPageData,
-        theme,
-      }}
-    >
+    <LayoutContext.Provider value={{ theme }}>
       {children}
     </LayoutContext.Provider>
   );
-};
+}
+
+export function useLayout() {
+  const context = useContext(LayoutContext);
+  if (context === undefined) {
+    throw new Error('useLayout must be used within a LayoutProvider');
+  }
+  return context;
+}

@@ -1,26 +1,59 @@
-import Layout from "@/components/layout/layout";
-import client from "@/tina/__generated__/client";
-import PostsClientPage from "./client-page";
+import { Container } from '@/components/layout/container';
+import { getStaticData } from '@/lib/get-static-data';
+import { Suspense } from 'react';
 
-export default async function PostsPage() {
-  let posts = await client.queries.postConnection({
-    sort: "date",
-  });
-  const allPosts = posts;
+export const dynamic = 'force-static';
 
-  while (posts.data?.postConnection.pageInfo.hasNextPage) {
-    posts = await client.queries.postConnection({
-      sort: "date",
-      after: posts.data.postConnection.pageInfo.endCursor,
-    });
-    allPosts.data.postConnection.edges.push(...posts.data.postConnection.edges);
-  }
+async function getData() {
+  const posts = await getStaticData();
+  return { posts };
+}
 
-  allPosts.data.postConnection.edges.reverse();
+function PostsLoading() {
+  return (
+    <div className="grid gap-8">
+      {[...Array(3)].map((_, i) => (
+        <div 
+          key={i}
+          className="p-6 bg-card rounded-lg border border-border animate-pulse"
+        >
+          <div className="h-8 bg-muted rounded w-3/4 mb-4"></div>
+          <div className="h-4 bg-muted rounded w-full"></div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default async function Posts() {
+  const { posts } = await getData();
 
   return (
-    <Layout rawPageData={allPosts.data}>
-      <PostsClientPage {...allPosts} />
-    </Layout>
+    <Container size="lg" className="py-12">
+      <div className="space-y-8">
+        <h1 className="text-4xl font-bold">Blog Posts</h1>
+        <Suspense fallback={<PostsLoading />}>
+          {posts.length > 0 ? (
+            <div className="grid gap-8">
+              {posts.map((post) => (
+                <article 
+                  key={post.slug}
+                  className="p-6 bg-card rounded-lg border border-border hover:border-primary/50 transition-colors"
+                >
+                  <h2 className="text-2xl font-semibold mb-4">
+                    {post.title}
+                  </h2>
+                  <p className="text-muted-foreground">
+                    {post.description}
+                  </p>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <p className="text-muted-foreground">No posts available.</p>
+          )}
+        </Suspense>
+      </div>
+    </Container>
   );
 }

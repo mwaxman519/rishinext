@@ -1,0 +1,22 @@
+name: Sync Tina Content & Schema to Staging
+
+on:
+  push:
+    branches:
+      - main  # ✅ Runs when content is edited in TinaCMS
+
+jobs:
+  sync-content:
+    name: Sync Content from Main to Staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Merge Content & Schema into Staging
+        run: |
+          git checkout staging
+          git checkout main -- content/ tina.config.ts tina/ .tina/
+          git add content/ tina.config.ts tina/ .tina/
+          git commit -m "Automated Sync: Update Tina content and schema from main"
+          git push origin staging

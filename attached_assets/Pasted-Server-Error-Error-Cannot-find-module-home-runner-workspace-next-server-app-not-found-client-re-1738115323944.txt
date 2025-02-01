@@ -1,0 +1,41 @@
+Server Error
+Error: Cannot find module '/home/runner/workspace/.next/server/app/not-found_client-reference-manifest.js'
+Require stack:
+- /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/load-components.js
+- /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/utils.js
+- /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/dev/hot-middleware.js
+- /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/dev/hot-reloader-webpack.js
+- /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/lib/router-server.js
+- /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/lib/start-server.js
+
+This error happened while generating the page. Any console logs will be displayed in the terminal window.
+Call Stack
+Module._resolveFilename
+node:internal/modules/cjs/loader (1225:15)
+<unknown>
+file:///home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/require-hook.js (55:36)
+Module._load
+node:internal/modules/cjs/loader (1051:27)
+Module.require
+node:internal/modules/cjs/loader (1311:19)
+mod.require
+file:///home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/require-hook.js (65:28)
+require
+node:internal/modules/helpers (179:18)
+loadClientReferenceManifest
+file:///home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/load-components.js (43:72)
+loadComponentsImpl
+file:///home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/load-components.js (65:29)
+async DevServer.findPageComponentsImpl
+file:///home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/next-server.js (671:36)
+async DevServer.findPageComponents
+file:///home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/dev/next-dev-server.js (562:20)
+async DevServer.renderErrorToResponseImpl
+file:///home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/base-server.js (2009:30)
+async DevServer.pipeImpl
+file:///home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/base-server.js (909:25)
+async NextNodeServer.handleCatchallRenderRequest
+file:///home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/next-server.js (266:17)
+async DevServer.handleRequestImpl
+file:///home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/base-server.js (805:17)

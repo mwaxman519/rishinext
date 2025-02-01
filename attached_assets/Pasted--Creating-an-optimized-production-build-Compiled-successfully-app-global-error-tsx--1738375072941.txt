@@ -1,0 +1,45 @@
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+
+./app/global-error.tsx
+4:10  Warning: '_error' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./lib/services/github-service.ts
+10:28  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+19:28  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+21:71  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+37:28  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./lib/services/logger-service.ts
+9:28  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+33:90  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./lib/services/webhook-validator.ts
+65:35  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+98:59  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+ ✓ Linting and checking validity of types 
+ ✓ Collecting page data    
+Error: <Html> should not be imported outside of pages/_document.
+Read more: https://nextjs.org/docs/messages/no-document-import-in-page
+    at y (.next/server/chunks/627.js:6:1263)
+Error occurred prerendering page "/404". Read more: https://nextjs.org/docs/messages/prerender-error
+Error: <Html> should not be imported outside of pages/_document.
+Read more: https://nextjs.org/docs/messages/no-document-import-in-page
+    at Y (/home/runner/workspace/node_modules/next/dist/compiled/next-server/pages.runtime.prod.js:16:5469)
+    at y (/home/runner/workspace/.next/server/chunks/627.js:6:1263)
+    at react-stack-bottom-frame (/home/runner/workspace/node_modules/react-dom/cjs/react-dom-server.edge.development.js:8798:18)
+    at renderWithHooks (/home/runner/workspace/node_modules/react-dom/cjs/react-dom-server.edge.development.js:4722:19)
+    at renderElement (/home/runner/workspace/node_modules/react-dom/cjs/react-dom-server.edge.development.js:5157:23)
+    at retryNode (/home/runner/workspace/node_modules/react-dom/cjs/react-dom-server.edge.development.js:5805:22)
+    at renderNodeDestructive (/home/runner/workspace/node_modules/react-dom/cjs/react-dom-server.edge.development.js:5631:11)
+    at renderElement (/home/runner/workspace/node_modules/react-dom/cjs/react-dom-server.edge.development.js:5143:11)
+    at retryNode (/home/runner/workspace/node_modules/react-dom/cjs/react-dom-server.edge.development.js:5805:22)
+    at renderNodeDestructive (/home/runner/workspace/node_modules/react-dom/cjs/react-dom-server.edge.development.js:5631:11)
+Export encountered an error on /_error: /404, exiting the build.
+ ⨯ Static worker exited with code: 1 and signal: null
+ Environment updated. Reloading shell...
+~/workspace$ ^C
+~/workspace$ 

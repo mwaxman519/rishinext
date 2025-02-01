@@ -1,0 +1,48 @@
+### Task: Verify My Replit Setup for Automated Static Builds and TinaCMS Integration
+
+I need you to verify that my **Replit project setup** aligns with the following requirements:
+
+#### **Project Overview**
+- My site is built using **Next.js** for static generation.
+- **TinaCMS** is hosted on **Vercel**, and my CMS interface is stored in the `cms` branch.
+- **Replit is responsible for generating static builds** and **pushing them to the `static` branch**.
+- My **staging branch** contains the development code, and **manual pushes trigger builds**.
+
+#### **Branch & Workflow Validation**
+- Verify that the **four-branch setup** is correctly structured:
+  1. `cms` → Stores the **TinaCMS static build** and updates automatically when content is edited.
+  2. `staging` → Holds the **Next.js development code**, and pushes are **triggered manually**.
+  3. `static` → Stores the **static build output** from Replit, which is deployed.
+  4. `main` → Only contains the **TinaCMS Next.js app** for live editing.
+
+- Ensure that **webhooks** are correctly configured:
+  - Commits to `cms` should **trigger a webhook** that initiates a new **CMS build** on Replit.
+  - `staging` builds are **only triggered manually**, ensuring controlled releases.
+
+#### **Static Site Generation**
+- Validate that Replit is **pulling the latest content** from the `cms` branch before running a new build.
+- Confirm that the **build process correctly outputs static files** into the `static` branch.
+
+#### **Deployment & Automation**
+- Check that:
+  - The `cms` branch updates **whenever a commit is made to `cms` or `staging`**.
+  - The `static` branch receives **only built static files**.
+  - Webhooks correctly trigger **only on `cms` commits** (not on `staging`).
+
+#### **Logging & Monitoring**
+- Verify that **logs are captured** for debugging failed builds or webhook misconfigurations.
+- Ensure that **error handling** exists in case a webhook or build process fails.
+
+#### **Expected Output**
+Please **analyze my Replit environment** and return a **detailed verification report**. Include:
+1. **Pass/Fail Checks** for each requirement.
+2. If something is incorrect, suggest **specific fixes** to bring the setup into compliance.
+3. Identify **any missing configurations** that could cause deployment failures.
+
+### **Final Deliverable**
+- Provide a summary of **what works correctly** and **what needs to be fixed**.
+- If all checks pass, confirm that the setup is production-ready.
+
+---
+
+This prompt will ensure that the Replit AI agent performs a **comprehensive validation** of your setup. Let me know if you want to refine or add anything before running it! 🚀

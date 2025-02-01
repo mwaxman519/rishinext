@@ -1,30 +1,28 @@
 import React, { PropsWithChildren } from "react";
-import { LayoutProvider } from "./layout-context";
-import client from "../../tina/__generated__/client";
 import Header from "../nav/header";
 import Footer from "../nav/footer";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 
-type LayoutProps = PropsWithChildren & {
-  rawPageData?: any;
-};
+type LayoutProps = PropsWithChildren;
 
-export default async function Layout({ children, rawPageData }: LayoutProps) {
-  const { data: globalData } = await client.queries.global({
-    relativePath: "index.json",
-  });
-
+export default function Layout({ children }: LayoutProps) {
   return (
-    <LayoutProvider globalSettings={globalData.global} pageData={rawPageData}>
+    <div className="min-h-screen flex flex-col">
       <Header />
-      <main
+      <main 
         className={cn(
-          "font-sans flex-1 text-gray-800 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-1000 flex flex-col"
+          "flex-1",
+          "relative flex flex-col",
+          "bg-background",
+          "min-h-[calc(100vh-4rem)]",
+          "transition-colors duration-300 ease-in-out"
         )}
       >
-        {children}
+        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {children}
+        </div>
       </main>
       <Footer />
-    </LayoutProvider>
+    </div>
   );
 }

@@ -1,0 +1,41 @@
+name: Sync Tina Schema to Main
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  sync-tina:
+    name: Sync Tina Files to Main
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check for Tina Changes
+        id: check_tina
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -E "tina/|.tina/|tina.config.ts"; then
+            echo "TINA_CHANGED=true" >> $GITHUB_ENV
+          else
+            echo "TINA_CHANGED=false" >> $GITHUB_ENV
+          fi
+
+      - name: Merge Tina Files into Main
+        if: env.TINA_CHANGED == 'true'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout main
+          git checkout staging -- tina/ .tina/ tina.config.ts
+          git add tina/ .tina/ tina.config.ts
+          git commit -m "Sync Tina schema updates from staging
+
+          Build timestamp: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          Source: staging branch"
+          git push origin main

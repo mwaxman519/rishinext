@@ -1,33 +1,28 @@
-import React from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
+import { ReactNode } from "react";
 
-export const Container = ({
+interface ContainerProps {
+  children: ReactNode;
+  className?: string;
+  size?: "sm" | "md" | "lg" | "full";
+}
+
+export function Container({
   children,
-  size = "medium",
-  width = "large",
-  className = "",
+  className,
+  size = "lg",
   ...props
-}) => {
-  const verticalPadding = {
-    custom: "",
-    small: "py-8",
-    medium: "py-12",
-    large: "py-24",
-    default: "py-12",
-  };
-  const widthClass = {
-    small: "max-w-4xl",
-    medium: "max-w-5xl",
-    large: "max-w-7xl",
-    custom: "",
-  };
-
+}: ContainerProps) {
   return (
     <div
       className={cn(
-        widthClass[width],
-        `mx-auto px-6 sm:px-8`,
-        verticalPadding[size],
+        "mx-auto px-4 sm:px-6 lg:px-8",
+        {
+          "max-w-screen-sm": size === "sm",
+          "max-w-screen-md": size === "md",
+          "max-w-screen-lg": size === "lg",
+          "w-full": size === "full",
+        },
         className
       )}
       {...props}
@@ -35,4 +30,4 @@ export const Container = ({
       {children}
     </div>
   );
-};
+}

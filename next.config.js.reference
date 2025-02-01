@@ -1,0 +1,25 @@
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'export',  // Enable static exports
+  images: {
+    unoptimized: true,  // Disable Next.js image optimization since we're using static files
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+        pathname: '/seed/**',
+      }
+    ],
+  },
+  reactStrictMode: true,
+  poweredByHeader: false,
+  trailingSlash: true, // Better for static hosting
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '', // For hosting in subdirectories
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '', // For hosting in subdirectories
+  experimental: {
+    // Only keep essential experimental features
+    optimizePackageImports: ['lucide-react'],
+  },
+}
+
+module.exports = nextConfig

@@ -1,0 +1,26 @@
+hot-dev-client.js:78 Console was cleared
+client.js:2 ./app/globals.css.webpack[javascript/auto]!=!./node_modules/.pnpm/next@14.0.4_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[2]!./node_modules/.pnpm/next@14.0.4_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[3]!./app/globals.css
+Error [ERR_REQUIRE_ESM]: require() of ES Module /home/runner/workspace/postcss.config.js from /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/lib/find-config.js not supported.
+postcss.config.js is treated as an ES module file as it is a .js file whose nearest parent package.json contains "type": "module" which declares all .js files in that package scope as ES modules.
+Instead either rename postcss.config.js to end in .cjs, change the requiring code to use dynamic import() which is available in all CommonJS modules, or change "type": "module" to "type": "commonjs" in /home/runner/workspace/package.json to treat all .js files as CommonJS (using .mjs for all ES modules instead).
+Import trace for requested module:
+./app/globals.css.webpack[javascript/auto]!=!./node_modules/.pnpm/next@14.0.4_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[2]!./node_modules/.pnpm/next@14.0.4_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[3]!./app/globals.css
+./app/globals.css
+console.error @ client.js:2
+Show 1 more frame
+Show less
+client.js:2 ./app/globals.css
+Error [ERR_REQUIRE_ESM]: require() of ES Module /home/runner/workspace/postcss.config.js from /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/lib/find-config.js not supported.
+postcss.config.js is treated as an ES module file as it is a .js file whose nearest parent package.json contains "type": "module" which declares all .js files in that package scope as ES modules.
+Instead either rename postcss.config.js to end in .cjs, change the requiring code to use dynamic import() which is available in all CommonJS modules, or change "type": "module" to "type": "commonjs" in /home/runner/workspace/package.json to treat all .js files as CommonJS (using .mjs for all ES modules instead).
+-- inner error --
+Error [ERR_REQUIRE_ESM]: require() of ES Module /home/runner/workspace/postcss.config.js from /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/lib/find-config.js not supported.
+postcss.config.js is treated as an ES module file as it is a .js file whose nearest parent package.json contains "type": "module" which declares all .js files in that package scope as ES modules.
+Instead either rename postcss.config.js to end in .cjs, change the requiring code to use dynamic import() which is available in all CommonJS modules, or change "type": "module" to "type": "commonjs" in /home/runner/workspace/package.json to treat all .js files as CommonJS (using .mjs for all ES modules instead).
+Generated code for /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[2]!/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[3]!/home/runner/workspace/app/globals.css
+
+Import trace for requested module:
+./app/globals.css
+console.error @ client.js:2
+Show 1 more frame
+Show less

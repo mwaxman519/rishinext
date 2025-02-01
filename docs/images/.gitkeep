@@ -1,0 +1,12 @@
+# This directory will contain setup screenshots for the README
+# Screenshots to include:
+- tina-create-project.png
+- tina-vercel-connect.png
+- tina-dashboard.png
+- github-branches.png
+- github-branch-protection.png
+- replit-github-connect.png
+- replit-env-vars.png
+- github-webhook-setup.png
+- webhook-test-logs.png
+- tina-editing-flow.png

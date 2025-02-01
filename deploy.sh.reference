@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Exit on error
+set -e
+
+# Configuration
+BUILD_FOLDER="out"     # Next.js static export output folder
+DEPLOY_FOLDER="dist"   # The deployment destination folder
+
+# Build the static site
+echo "Building static site..."
+npm run build
+
+# Create the deployment folder if it doesn't exist
+mkdir -p $DEPLOY_FOLDER
+
+# Copy the built files
+echo "Copying built files..."
+cp -r $BUILD_FOLDER/* $DEPLOY_FOLDER/
+
+# Optional: Optimize images (if imagemin-cli is installed)
+if command -v imagemin &> /dev/null; then
+  echo "Optimizing images..."
+  find $DEPLOY_FOLDER -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" \) -exec imagemin {} -o {} \;
+fi
+
+# Optional: Gzip files for better compression
+echo "Compressing files..."
+find $DEPLOY_FOLDER -type f \( -name "*.js" -o -name "*.css" -o -name "*.html" \) -exec gzip -9 -k {} \;
+
+echo "Static build complete!"
+echo "Files are ready in the $DEPLOY_FOLDER directory"

@@ -1,0 +1,42 @@
+Build error: ek [Error]: Page with `dynamic = "error"` couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/app/building-your-application/rendering/static-and-dynamic#dynamic-rendering
+    at eO (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:49797)
+    at Module.eE (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:50352)
+    at s (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:55958)
+    at Object.get (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:56174)
+    at POST (webpack-internal:///(rsc)/./app/api/export/build/route.ts:21:39)
+    at /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:63257
+    at /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:133:36
+    at NoopContextManager.with (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854)
+    at /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:122:103
+    at NoopContextManager.with (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NextTracerImpl.trace (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:122:28)
+    at /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:56774
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at Object.wrap (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:37057)
+    at /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:54547
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at Object.wrap (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:36306)
+    at /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:54509
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at eH.execute (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:53902)
+    at eH.handle (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:64515)
+    at doRender (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/base-server.js:1330:60)
+    at cacheEntry.responseCache.get.routeKind (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/base-server.js:1552:34)
+    at ResponseCache.get (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/response-cache/index.js:49:26)
+    at DevServer.renderToResponseWithComponentsImpl (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/base-server.js:1460:53)
+    at /home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/base-server.js:990:121
+    at NextTracerImpl.trace (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:104:20)
+    at DevServer.renderToResponseWithComponents (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/base-server.js:990:41)
+    at DevServer.renderPageComponent (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/base-server.js:1843:35)
+    at async DevServer.renderToResponseImpl (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/base-server.js:1881:32)
+    at async DevServer.pipeImpl (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/base-server.js:909:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/next-server.js:266:17)
+    at async DevServer.handleRequestImpl (/home/runner/workspace/node_modules/.pnpm/next@14.0.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/server/base-server.js:805:17) {
+  code: 'NEXT_STATIC_GEN_BAILOUT'
+}
+^C
+ 

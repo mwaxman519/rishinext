@@ -1,0 +1,30 @@
+name: Sync Static Site to Main
+
+on:
+  push:
+    branches:
+      - staging  # ✅ Runs when changes are pushed to `staging`
+
+jobs:
+  build-and-sync:
+    name: Build Static Site and Push to Main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Static Export
+        run: npm run build  # Ensure this outputs to /out
+
+      - name: Push Static Files to Main Branch
+        run: |
+          git checkout main
+          git pull origin main
+          rm -rf *  # Clear old files
+          cp -r out/* .
+          git add .
+          git commit -m "Updated static site from staging"
+          git push origin main

@@ -1,0 +1,63 @@
+run = "npm run dev"
+hidden = [".config", "package-lock.json"]
+modules = ["nodejs-20"]
+
+[env]
+PORT = "3000"
+XDG_CONFIG_HOME = "/home/runner/.config"
+PATH = "/home/runner/$REPL_SLUG/.config/npm/node_global/bin:/home/runner/$REPL_SLUG/node_modules/.bin"
+npm_config_prefix = "/home/runner/$REPL_SLUG/.config/npm/node_global"
+NEXT_TELEMETRY_DISABLED = "1"
+NODE_ENV = "development"
+
+[nix]
+channel = "stable-22_11"
+
+[packager]
+language = "nodejs"
+  [packager.features]
+  packageSearch = true
+  guessImports = true
+  enabledForHosting = false
+
+[languages]
+  [languages.javascript]
+  pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
+    [languages.javascript.languageServer]
+    start = "typescript-language-server --stdio"
+
+[deployment]
+run = ["sh", "-c", "npm run dev"]
+deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 3000
+externalPort = 3000
+
+[workflows]
+runButton = "Start Next.js"
+
+[[workflows.workflow]]
+name = "Start Next.js"
+author = "agent"
+persistent = true
+mode = "parallel"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = true
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "rm -rf .next node_modules/.cache"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+wait_for_port = 3000
+wait_for_text = "Ready in"
+
+[gitHook]
+preCommit = "npm run lint"

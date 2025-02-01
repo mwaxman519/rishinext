@@ -1,0 +1,117 @@
+The error Unable to find TinaProvider occurs when the TinaProvider component is not properly added to the root of your application. This component is required to initialize TinaCMS within your Next.js app.
+
+Here’s how to resolve it step by step:
+
+1. Wrap Your Application with TinaProvider
+Ensure that TinaProvider is wrapping your entire application in the _app.tsx file.
+
+Update your pages/_app.tsx to include TinaProvider as shown below:
+
+Example:
+tsx
+Copy
+Edit
+import { TinaCMS, TinaProvider } from 'tinacms';
+import { tinaConfig } from '../tina/config'; // Adjust the path if needed
+import '../styles/globals.css'; // Your global styles
+
+function MyApp({ Component, pageProps }: any) {
+  return (
+    <TinaProvider cms={TinaCMS}>
+      <Component {...pageProps} />
+    </TinaProvider>
+  );
+}
+
+export default MyApp;
+2. Ensure TinaCMS is Properly Configured
+Check that your tina/config.ts file is set up correctly. This file defines how TinaCMS connects to Tina Cloud and provides schema information.
+
+Example tina/config.ts:
+typescript
+Copy
+Edit
+import { defineConfig } from 'tinacms';
+
+export default defineConfig({
+  clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID, // Replace with your client ID
+  branch: process.env.NEXT_PUBLIC_TINA_BRANCH || 'main', // Replace with your branch
+  token: process.env.TINA_TOKEN, // Replace with your access token
+  media: {
+    tina: {
+      mediaRoot: 'uploads',
+      publicFolder: 'public',
+    },
+  },
+  schema: {
+    collections: [
+      {
+        label: 'Blog Posts',
+        name: 'posts',
+        path: 'content/posts',
+        fields: [
+          { type: 'string', name: 'title', label: 'Title' },
+          { type: 'text', name: 'body', label: 'Body' },
+        ],
+      },
+    ],
+  },
+});
+3. Export the Configured TinaProvider
+If you're using Tina Cloud's auto-generated client, ensure you wrap your app in the auto-generated TinaProvider instead.
+
+Import the TinaProvider from the auto-generated file in the tina directory.
+Update your _app.tsx to use the generated TinaProvider.
+Example:
+tsx
+Copy
+Edit
+import { TinaProvider, TinaCMS } from 'tinacms'; // Auto-generated file
+import '../styles/globals.css';
+
+function MyApp({ Component, pageProps }: any) {
+  return (
+    <TinaProvider>
+      <Component {...pageProps} />
+    </TinaProvider>
+  );
+}
+
+export default MyApp;
+4. Verify Your Environment Variables
+Ensure the required environment variables are set up in .env.local:
+
+env
+Copy
+Edit
+NEXT_PUBLIC_TINA_CLIENT_ID=your-client-id
+NEXT_PUBLIC_TINA_BRANCH=main
+TINA_TOKEN=your-access-token
+After setting up .env.local, restart the development server.
+
+5. Ensure Auto-Generated Files Exist
+Check that TinaCMS auto-generated files exist in the tina/__generated__ directory. These files are essential for TinaCMS to work.
+
+If missing, regenerate them by running:
+
+bash
+Copy
+Edit
+npx tinacms init
+6. Rebuild the Admin Panel
+If you've made changes to the Tina schema or configuration, rebuild the admin panel to ensure it works properly:
+
+bash
+Copy
+Edit
+npx tinacms build
+7. Restart the Development Server
+After applying these changes, restart your development server to ensure everything is loaded correctly:
+
+bash
+Copy
+Edit
+npm run dev
+8. Test Your Application
+Visit your admin screen at /admin or /admin/index.html.
+Ensure content editing works without errors.

@@ -1,0 +1,67 @@
+Build error: Error: Command failed: npm run build
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⨯ ESLint must be installed in order to run during builds: pnpm install --save-dev eslint
+Failed to compile.
+
+./app/layout.tsx:21:14
+Type error: 'URLCleaner' cannot be used as a JSX component.
+  Its return type 'ReactNode' is not a valid JSX element.
+    Type 'undefined' is not assignable to type 'Element | null'.
+
+  19 |         <Providers>
+  20 |           <div className="relative flex min-h-screen flex-col">
+> 21 |             <URLCleaner>
+     |              ^
+  22 |               <Layout>
+  23 |                 {children}
+  24 |               </Layout>
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.0.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.0.0
+npm notice To update run: npm install -g npm@11.0.0
+npm notice
+
+    at genericNodeError (node:internal/errors:984:15)
+    at wrappedFn (node:internal/errors:538:14)
+    at ChildProcess.exithandler (node:child_process:422:12)
+    at ChildProcess.emit (node:events:518:28)
+    at maybeClose (node:internal/child_process:1104:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:304:5)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  code: 1,
+  killed: false,
+  signal: null,
+  cmd: 'npm run build',
+  stdout: '\n' +
+    '> workspace@1.0.0 build\n' +
+    '> next build\n' +
+    '\n' +
+    '   ▲ Next.js 14.0.4\n' +
+    '   - Environments: .env\n' +
+    '\n' +
+    '   Creating an optimized production build ...\n' +
+    ' ✓ Compiled successfully\n' +
+    '   Linting and checking validity of types ...\n',
+  stderr: ' ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env\n' +
+    ' ⨯ ESLint must be installed in order to run during builds: pnpm install --save-dev eslint\n' +
+    'Failed to compile.\n' +
+    '\n' +
+    './app/layout.tsx:21:14\n' +
+    "Type error: 'URLCleaner' cannot be used as a JSX component.\n" +
+    "  Its return type 'ReactNode' is not a valid JSX element.\n" +
+    "    Type 'undefined' is not assignable to type 'Element | null'.\n" +
+    '\n' +
+    '\x1B[0m \x1B[90m 19 |\x1B[39m         \x1B[33m<\x1B[39m\x1B[33mProviders\x1B[39m\x1B[33m>\x1B[39m\x1B[0m\n' +
+    '\x1B[0m \x1B[90m 20 |\x1B[39m           \x1B[33m<\x1B[39m\x1B[33mdiv\x1B[39m className\x1B[33m=\x1B[39m\x1B[32m"relative flex min-h-screen flex-col"\x1B[39m\x1B[33m>\x1B[39m\x1B[0m\n' +
+    '\x1B[0m\x1B[31m\x1B[1m>\x1B[22m\x1B[39m\x1B[90m 21 |\x1B[39m             \x1B[33m<\x1B[39m\x1B[33mURLCleaner\x1B[39m\x1B[33m>\x1B[39m\x1B[0m\n' +
+    '\x1B[0m \x1B[90m    |\x1B[39m              \x1B[31m\x1B[1m^\x1B[22m\x1B[39m\x1B[0m\n' +
+    '\x1B[0m \x1B[90m 22 |\x1B[39m               \x1B[33m<\x1B[39m\x1B[33mLayout\x1B[39m\x1B[33m>\x1B[39m\x1B[0m\n' +
+    '\x1B[0m \x1B[90m 23 |\x1B[39m                 {children}\x1B[0m\n' +
+    '\x1B[0m \x1B[90m 24 |\x1B[39m               \x1B[33m<\x1B[39m\x1B[33m/\x1B[39m\x1B[33mLayout\x1B[39m\x1B[33m>\x1B[39m\x1B[0m\n' +
+    'npm notice\n' +
+    'npm notice New major version of npm available! 10.8.2 -> 11.0.0\n' +
+    'npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.0.0\n' +
+    'npm notice To update run: npm install -g npm@11.0.0\n' +
+    'npm notice\n'
+}
+^C
