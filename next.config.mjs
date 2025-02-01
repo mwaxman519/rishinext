@@ -9,7 +9,12 @@ const withMDX = createMDX({
     remarkPlugins: [],
     rehypePlugins: [
       rehypeSlug,
-      [rehypeAutolinkHeadings, { behavior: 'wrap' }],
+      [rehypeAutolinkHeadings, { 
+        behavior: 'wrap',
+        properties: {
+          className: ['anchor']
+        }
+      }],
       [rehypePrettyCode, {
         theme: 'github-dark',
         onVisitLine(node) {
@@ -21,6 +26,9 @@ const withMDX = createMDX({
         onVisitHighlightedLine(node) {
           node.properties.className.push('line--highlighted');
         },
+        onVisitHighlightedWord(node) {
+          node.properties.className = ['word--highlighted'];
+        }
       }],
     ],
     providerImportSource: "@mdx-js/react",
@@ -30,17 +38,17 @@ const withMDX = createMDX({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  distDir: 'out', // Using standard Next.js output directory
-  trailingSlash: true, // This helps with static hosting
+  distDir: 'out',
+  trailingSlash: true,
   images: {
-    unoptimized: true, // Required for static export
+    unoptimized: true,
     loader: 'custom',
     loaderFile: './image-loader.js',
   },
   reactStrictMode: true,
   experimental: {
     ppr: false,
-    mdxRs: true, // Enable the new Rust-based MDX compiler
+    mdxRs: true,
   },
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
 };
