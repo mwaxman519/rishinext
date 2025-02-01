@@ -1,3 +1,53 @@
+# -----------------------------
+# 1) Fragments
+# -----------------------------
+
+# LayoutQueryFragment references your global doc 
+# from content/global/main.mdx
+fragment LayoutQueryFragment on Query {
+  globalDocument(relativePath: "main.mdx") {
+    ...GlobalDocParts
+  }
+}
+
+# GlobalDocParts is for fields in your global collection 
+fragment GlobalDocParts on Global {
+  siteTitle
+  tagline
+  footerText
+}
+
+# AuthorParts for referencing Author fields
+fragment AuthorParts on Author {
+  name
+  avatar
+  bio
+}
+
+# PageParts for referencing Page fields
+fragment PageParts on Page {
+  title
+  description
+  body
+}
+
+# PostParts for referencing Post fields
+fragment PostParts on Post {
+  title
+  description
+  date
+  excerpt
+  body
+  # If you need references to author or _sys, 
+  # you can add them here or inline in the queries
+}
+
+# -----------------------------
+# 2) Queries
+# -----------------------------
+
+# This query references your global doc + 
+# postConnection for listing posts on the main/home page
 query pageQuery {
   ...LayoutQueryFragment
   postConnection {
@@ -20,6 +70,8 @@ query pageQuery {
   }
 }
 
+# This query references your global doc + 
+# pulls a single page by relative path
 query contentQuery($relativePath: String!) {
   ...LayoutQueryFragment
   page(relativePath: $relativePath) {
@@ -27,14 +79,15 @@ query contentQuery($relativePath: String!) {
   }
 }
 
+# This query references your global doc + 
+# pulls a single blog post by relative path
 query blogPostQuery($relativePath: String!) {
   ...LayoutQueryFragment
   post(relativePath: $relativePath) {
     ...PostParts
     author {
       ... on Author {
-        name
-        avatar
+        ...AuthorParts
       }
     }
   }
