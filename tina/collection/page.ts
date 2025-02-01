@@ -1,51 +1,25 @@
-import type { Collection } from "tinacms";
-import { heroBlockSchema } from "@/components/blocks/hero";
-import { contentBlockSchema } from "@/components/blocks/content";
-import { testimonialBlockSchema } from "@/components/blocks/testimonial";
-import { featureBlockSchema } from "@/components/blocks/features";
-import { videoBlockSchema } from "@/components/blocks/video";
-
-const Page: Collection = {
+export default {
   label: "Pages",
   name: "page",
+  // Use the new folder for pages
   path: "content/pages",
   format: "mdx",
-  ui: {
-    router: ({ document }) => {
-      if (document._sys.filename === "home") {
-        return `/`;
-      }
-      return undefined;
-    },
-  },
   fields: [
     {
       type: "string",
-      label: "Title",
       name: "title",
-      description:
-        "The title of the page. This is used to display the title in the CMS",
-      isTitle: true,
-      required: true,
+      label: "Title",
     },
     {
-      type: "object",
-      list: true,
-      name: "blocks",
-      label: "Sections",
-      ui: {
-        visualSelector: true,
-      },
-      templates: [
-        heroBlockSchema,
-        //@ts-ignore
-        featureBlockSchema,
-        contentBlockSchema,
-        testimonialBlockSchema,
-        videoBlockSchema,
-      ],
+      type: "string",
+      name: "description",
+      label: "Description",
+    },
+    {
+      type: "rich-text",
+      name: "body",
+      label: "Body",
+      isBody: true,
     },
   ],
 };
-
-export default Page;
