@@ -1,5 +1,4 @@
 import type { MDXComponents } from 'mdx/types';
-import { useMDXComponent } from '@mdx-js/react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
@@ -81,27 +80,6 @@ const components: MDXComponents = {
       )}
     </figure>
   ),
-  Callout: ({ children, type = 'info' }) => (
-    <div className={cn(
-      "my-6 flex items-start rounded-lg border border-l-4 p-4",
-      {
-        'border-l-blue-500 bg-blue-50 dark:bg-blue-950/20': type === 'info',
-        'border-l-yellow-500 bg-yellow-50 dark:bg-yellow-950/20': type === 'warning',
-        'border-l-red-500 bg-red-50 dark:bg-red-950/20': type === 'error',
-      }
-    )}>
-      {children}
-    </div>
-  ),
-  strong: ({ children }) => (
-    <strong className="font-semibold">{children}</strong>
-  ),
-  em: ({ children }) => (
-    <em className="italic">{children}</em>
-  ),
-  hr: () => (
-    <hr className="my-8 border-border" />
-  ),
   table: ({ children }) => (
     <div className="my-6 w-full overflow-y-auto">
       <table className="w-full border-collapse text-sm">
@@ -125,7 +103,6 @@ export function useMDXComponents() {
   return components;
 }
 
-export function MDXContent({ code }: { code: string }) {
-  const Component = useMDXComponent(code);
-  return <Component components={components} />;
+export function MDXContent({ content }: { content: string }) {
+  return <div className="mdx-content prose dark:prose-invert">{content}</div>;
 }

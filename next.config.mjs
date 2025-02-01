@@ -18,7 +18,6 @@ const withMDX = createMDX({
       [rehypePrettyCode, {
         theme: 'github-dark',
         onVisitLine(node) {
-          // Prevent lines from collapsing in `display: grid` mode
           if (node.children.length === 0) {
             node.children = [{ type: 'text', value: ' ' }];
           }
@@ -31,7 +30,6 @@ const withMDX = createMDX({
         }
       }],
     ],
-    providerImportSource: "@mdx-js/react",
   },
 });
 
@@ -39,18 +37,16 @@ const withMDX = createMDX({
 const nextConfig = {
   output: 'export',
   distDir: 'out',
-  trailingSlash: true,
   images: {
     unoptimized: true,
     loader: 'custom',
     loaderFile: './image-loader.js',
   },
   reactStrictMode: true,
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   experimental: {
-    ppr: false,
     mdxRs: true,
   },
-  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
 };
 
 export default withMDX(nextConfig);

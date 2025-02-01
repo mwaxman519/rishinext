@@ -1,5 +1,5 @@
 import { Container } from '@/components/layout/container';
-import { getStaticData, getStaticDataBySlug, getAllSlugs } from '@/lib/get-static-data';
+import { getStaticDataBySlug, getAllSlugs } from '@/lib/get-static-data';
 import { MDXContent } from '@/components/mdx/mdx-components';
 import { notFound } from 'next/navigation';
 
@@ -52,7 +52,7 @@ export default async function Post({ params }: { params: { slug: string } }) {
             {post.description}
           </p>
         )}
-        <MDXContent code={post.content} />
+        <MDXContent content={post.content} />
       </article>
     </Container>
   );

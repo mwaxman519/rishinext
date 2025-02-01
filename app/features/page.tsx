@@ -16,8 +16,10 @@ export default function FeaturesPage() {
         throw new Error(data.error || 'An error occurred while testing error handling');
       }
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+
       LoggerService.log('error', 'Test error triggered:', {
-        message: error.message,
+        message: errorMessage,
         type: 'test_error'
       });
 
@@ -27,7 +29,7 @@ export default function FeaturesPage() {
         variant: "destructive",
       });
 
-      throw error; // Re-throw to trigger error boundary
+      throw error;
     }
   };
 
