@@ -1,10 +1,11 @@
-query {
+query GetGlobalDoc {
+  # references the single doc: content/global/main.mdx
   globalDocument(relativePath: "main.mdx") {
-    ...UserGlobalParts
+    ...MyGlobalParts
   }
 }
 
-fragment UserGlobalParts on Global {
+fragment MyGlobalParts on Global {
   siteTitle
   tagline
   footerText
