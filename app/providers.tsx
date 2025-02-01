@@ -15,7 +15,7 @@ export function Providers({ children }: ProvidersProps) {
   useEffect(() => {
     // Initialize GitHub auto-commit service
     GitHubAutoCommitService.initialize();
-    GitHubAutoCommitService.setupAutoCommit(5); // Auto-commit every 5 minutes
+    GitHubAutoCommitService.setupAutoCommit(10); // Auto-commit every 10 seconds for testing
   }, []);
 
   return (

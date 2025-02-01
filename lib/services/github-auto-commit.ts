@@ -45,9 +45,9 @@ export class GitHubAutoCommitService {
 
   /**
    * Setup auto-commit interval
-   * @param intervalMinutes How often to check and commit changes (default: 5 minutes)
+   * @param seconds How often to check and commit changes (default: 10 seconds)
    */
-  static setupAutoCommit(intervalMinutes: number = 5) {
+  static setupAutoCommit(seconds: number = 10) {
     if (typeof window === 'undefined') return; // Only run on client-side
 
     if (!this.initialized) {
@@ -56,8 +56,8 @@ export class GitHubAutoCommitService {
 
     setInterval(() => {
       this.commitAndPush('Auto-commit: Periodic save of changes');
-    }, intervalMinutes * 60 * 1000);
+    }, seconds * 1000); // Convert seconds to milliseconds
 
-    console.log(`Auto-commit configured for every ${intervalMinutes} minutes`);
+    console.log(`Auto-commit configured for every ${seconds} seconds`);
   }
 }
