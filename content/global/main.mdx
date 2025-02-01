@@ -1,0 +1,25 @@
+---
+siteTitle: "My Awesome Website"
+tagline: "Your next-level tagline"
+logo: "/uploads/logo.png"
+footerContent: "**© 2025** - All rights reserved"
+---
+
+# Global Site Configuration
+
+This file contains the global configuration settings for the website. The frontmatter above defines key site-wide variables that can be accessed throughout the application.
+
+## Usage
+
+Import these settings using the `getStaticData` function from `lib/get-static-data.ts`:
+
+```typescript
+const globalConfig = await getStaticData('global');
+```
+
+## Available Settings
+
+- **siteTitle**: The main title of your website
+- **tagline**: A brief description or slogan
+- **logo**: Path to your site's logo
+- **footerContent**: Markdown content for the footer
