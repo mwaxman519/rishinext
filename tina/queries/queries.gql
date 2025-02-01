@@ -1,21 +1,7 @@
-# -----------------------------
-# 1) Fragments
-# -----------------------------
+# ------------------------------------------------
+# Fragment definitions
+# ------------------------------------------------
 
-# LayoutQueryFragment references your global doc 
-fragment LayoutQueryFragment on Query {
-  globalDocument(relativePath: "main.mdx") {
-    ...MyGlobalDocParts
-  }
-}
-
-fragment MyGlobalDocParts on Global {
-  siteTitle
-  tagline
-  footerText
-}
-
-# Renamed these fragments to avoid clashing with auto-generated ones
 fragment UserAuthorParts on Author {
   name
   avatar
@@ -36,13 +22,11 @@ fragment UserPostParts on Post {
   body
 }
 
-# -----------------------------
-# 2) Queries
-# -----------------------------
+# ------------------------------------------------
+# Queries
+# ------------------------------------------------
 
-# This pulls your global doc + postConnection 
 query pageQuery {
-  ...LayoutQueryFragment
   postConnection {
     edges {
       node {
@@ -63,17 +47,13 @@ query pageQuery {
   }
 }
 
-# Single page by relative path
 query contentQuery($relativePath: String!) {
-  ...LayoutQueryFragment
   page(relativePath: $relativePath) {
     ...UserPageParts
   }
 }
 
-# Single blog post by relative path
 query blogPostQuery($relativePath: String!) {
-  ...LayoutQueryFragment
   post(relativePath: $relativePath) {
     ...UserPostParts
     author {
