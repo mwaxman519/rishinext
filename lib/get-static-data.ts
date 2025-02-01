@@ -11,23 +11,24 @@ export type StaticData = {
 };
 
 const POSTS_DIRECTORY = path.join(process.cwd(), 'content', 'posts');
+const PAGES_DIRECTORY = path.join(process.cwd(), 'content', 'pages');
 
 /**
- * Utility function to fetch static data during build time
+ * Get data from MDX files in a specific directory
  */
-export async function getStaticData(): Promise<StaticData[]> {
-  // Create posts directory if it doesn't exist
-  if (!fs.existsSync(POSTS_DIRECTORY)) {
-    fs.mkdirSync(POSTS_DIRECTORY, { recursive: true });
+async function getMDXData(directory: string): Promise<StaticData[]> {
+  // Create directory if it doesn't exist
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory, { recursive: true });
     return [];
   }
 
   try {
-    const filenames = fs.readdirSync(POSTS_DIRECTORY);
-    const posts = filenames
+    const filenames = fs.readdirSync(directory);
+    const items = filenames
       .filter(filename => filename.endsWith('.mdx'))
       .map(filename => {
-        const filePath = path.join(POSTS_DIRECTORY, filename);
+        const filePath = path.join(directory, filename);
         const fileContents = fs.readFileSync(filePath, 'utf8');
         const { data, content } = matter(fileContents);
 
@@ -50,22 +51,37 @@ export async function getStaticData(): Promise<StaticData[]> {
         return 0;
       });
 
-    return posts;
+    return items;
   } catch (error) {
-    console.error('Error reading posts directory:', error);
+    console.error(`Error reading directory ${directory}:`, error);
     return [];
   }
 }
 
 /**
- * Get a single item by slug
+ * Get all posts
  */
-export async function getStaticDataBySlug(slug: string): Promise<StaticData | null> {
+export async function getStaticData(): Promise<StaticData[]> {
+  return getMDXData(POSTS_DIRECTORY);
+}
+
+/**
+ * Get all pages
+ */
+export async function getAllPages(): Promise<StaticData[]> {
+  return getMDXData(PAGES_DIRECTORY);
+}
+
+/**
+ * Get a single item by slug from either posts or pages
+ */
+export async function getStaticDataBySlug(slug: string, type: 'post' | 'page' = 'post'): Promise<StaticData | null> {
   try {
-    const allData = await getStaticData();
-    return allData.find(item => item.slug === slug) || null;
+    const directory = type === 'post' ? POSTS_DIRECTORY : PAGES_DIRECTORY;
+    const items = await getMDXData(directory);
+    return items.find(item => item.slug === slug) || null;
   } catch (error) {
-    console.error(`Error fetching post with slug ${slug}:`, error);
+    console.error(`Error fetching ${type} with slug ${slug}:`, error);
     return null;
   }
 }
@@ -73,12 +89,12 @@ export async function getStaticDataBySlug(slug: string): Promise<StaticData | nu
 /**
  * Get all available slugs for static path generation
  */
-export async function getAllSlugs(): Promise<string[]> {
+export async function getAllSlugs(type: 'post' | 'page' = 'post'): Promise<string[]> {
   try {
-    const allData = await getStaticData();
-    return allData.map(item => item.slug);
+    const items = type === 'post' ? await getStaticData() : await getAllPages();
+    return items.map(item => item.slug);
   } catch (error) {
-    console.error('Error getting all slugs:', error);
+    console.error(`Error getting all ${type} slugs:`, error);
     return [];
   }
 }

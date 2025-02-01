@@ -1,0 +1,44 @@
+name: Sync Static Build (out) from Staging to Main
+
+on:
+  push:
+    branches:
+      - staging
+    paths:
+      - "out/**"
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout Staging Branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+
+      - name: Switch to Main Branch
+        run: |
+          git fetch origin main
+          git checkout main
+
+      - name: Copy and Commit Changes
+        run: |
+          # Copy the out directory from staging
+          git checkout staging -- out
+          
+          # Stage and commit the changes
+          git add out
+          git commit -m "Sync static build from staging" || echo "No changes to commit"
+
+      - name: Push to Main
+        run: |
+          git push origin main
