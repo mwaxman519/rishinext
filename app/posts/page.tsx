@@ -3,11 +3,18 @@ import { getStaticData } from '@/lib/get-static-data';
 import { Suspense } from 'react';
 import Link from 'next/link';
 
+// Force static generation for this page
 export const dynamic = 'force-static';
+export const revalidate = false;
 
 async function getData() {
-  const posts = await getStaticData();
-  return { posts };
+  try {
+    const posts = await getStaticData();
+    return { posts };
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return { posts: [] };
+  }
 }
 
 function PostsLoading() {
@@ -30,7 +37,7 @@ export default async function Posts() {
   const { posts } = await getData();
 
   return (
-    <Container size="lg" className="py-12">
+    <Container className="py-12">
       <div className="space-y-8">
         <h1 className="text-4xl font-bold">Blog Posts</h1>
         <Suspense fallback={<PostsLoading />}>
