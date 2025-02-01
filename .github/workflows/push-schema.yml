@@ -1,0 +1,32 @@
+name: Tina Schema Push
+on:
+  workflow_dispatch:
+    # This allows you to run it manually from the GitHub Actions tab
+  push:
+    branches:
+      - main
+jobs:
+  pushSchema:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: pnpm install
+        # or "npm install" or "yarn install" if you prefer
+
+      - name: Push Tina schema
+        run: |
+          # This command updates the remote Tina Cloud schema
+          pnpm tinacms schema:push
+        env:
+          # Provide the same environment variables you use in Vercel:
+          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
+          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+          NEXT_PUBLIC_TINA_BRANCH: "main"
