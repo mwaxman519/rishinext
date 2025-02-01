@@ -13,7 +13,7 @@ const config = defineConfig({
   token: process.env.TINA_TOKEN!,
   media: {
     tina: {
-      // Keep these as-is if your media assets remain in public/uploads.
+      // Keep these as-is if your media assets remain in public/uploads..
       publicFolder: "public",
       mediaRoot: "uploads",
     },
