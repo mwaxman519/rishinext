@@ -1,6 +1,7 @@
 import { Container } from '@/components/layout/container';
 import { getStaticData } from '@/lib/get-static-data';
 import { Suspense } from 'react';
+import Link from 'next/link';
 
 export const dynamic = 'force-static';
 
@@ -40,12 +41,19 @@ export default async function Posts() {
                   key={post.slug}
                   className="p-6 bg-card rounded-lg border border-border hover:border-primary/50 transition-colors"
                 >
-                  <h2 className="text-2xl font-semibold mb-4">
-                    {post.title}
-                  </h2>
-                  <p className="text-muted-foreground">
-                    {post.description}
-                  </p>
+                  <Link href={`/posts/${post.slug}`}>
+                    <h2 className="text-2xl font-semibold mb-4">
+                      {post.title}
+                    </h2>
+                    <p className="text-muted-foreground mb-2">
+                      {post.description}
+                    </p>
+                    {post.date && (
+                      <p className="text-sm text-muted-foreground">
+                        {new Date(post.date).toLocaleDateString()}
+                      </p>
+                    )}
+                  </Link>
                 </article>
               ))}
             </div>

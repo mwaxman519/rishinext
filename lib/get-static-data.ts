@@ -1,33 +1,54 @@
-type StaticData = {
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+
+export type StaticData = {
   slug: string;
   title: string;
   description: string;
+  content: string;
+  date?: string;
 };
+
+const POSTS_DIRECTORY = path.join(process.cwd(), 'content', 'posts');
 
 /**
  * Utility function to fetch static data during build time
  */
 export async function getStaticData(): Promise<StaticData[]> {
-  // In a real application, this would fetch from a data source
-  const data: StaticData[] = [
-    {
-      slug: 'hello-world',
-      title: 'Hello World',
-      description: 'Welcome to our modern web application',
-    },
-    {
-      slug: 'getting-started',
-      title: 'Getting Started',
-      description: 'Learn how to get started with our application',
-    },
-    {
-      slug: 'features',
-      title: 'Features',
-      description: 'Explore the features of our application',
-    },
-  ];
+  // Ensure the posts directory exists
+  if (!fs.existsSync(POSTS_DIRECTORY)) {
+    return [];
+  }
 
-  return data;
+  const filenames = fs.readdirSync(POSTS_DIRECTORY);
+  const posts = filenames
+    .filter(filename => filename.endsWith('.mdx'))
+    .map(filename => {
+      const filePath = path.join(POSTS_DIRECTORY, filename);
+      const fileContents = fs.readFileSync(filePath, 'utf8');
+      const { data, content } = matter(fileContents);
+
+      // Extract slug from filename (remove .mdx extension)
+      const slug = filename.replace(/\.mdx$/, '');
+
+      return {
+        slug,
+        title: data.title || 'Untitled',
+        description: data.description || '',
+        content,
+        date: data.date,
+      };
+    })
+    .sort((a, b) => {
+      // Sort by date if available, newest first
+      if (a.date && b.date) {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      }
+      return 0;
+    });
+
+  return posts;
 }
 
 /**
