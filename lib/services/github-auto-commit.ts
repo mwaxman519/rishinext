@@ -11,19 +11,18 @@ export class GitHubAutoCommitService {
   /**
    * Initialize the GitHub service
    */
-  static initialize() {
-    if (typeof window === 'undefined') {
-      console.log('[GitHubAutoCommit] Skipping initialization - server-side context');
-      return;
-    }
-
+  static initialize(providedToken?: string) {
     if (this.initialized) {
       console.log('[GitHubAutoCommit] Service already initialized');
       return;
     }
 
-    // Check for either GITHUB_TOKEN or NEXT_PUBLIC_GITHUB_TOKEN
-    const token = process.env.GITHUB_TOKEN || process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+    // Check for token in different environments
+    const token = providedToken || 
+                 (typeof window !== 'undefined' 
+                   ? process.env.NEXT_PUBLIC_GITHUB_TOKEN 
+                   : process.env.GITHUB_TOKEN);
+
     if (!token) {
       console.error('[GitHubAutoCommit] GitHub token not found in environment variables');
       return;
@@ -36,24 +35,44 @@ export class GitHubAutoCommitService {
   }
 
   /**
-   * Validate initialization and token
+   * Force a commit and push immediately, bypassing debounce
    */
-  private static validateState(): boolean {
-    if (!this.initialized) {
-      console.error('[GitHubAutoCommit] Service not initialized');
-      return false;
+  static async forceCommitAndPush(message: string) {
+    if (!this.validateState()) {
+      throw new Error('GitHub auto-commit service not properly initialized');
     }
 
-    if (!this.token) {
-      console.error('[GitHubAutoCommit] No valid GitHub token available');
-      return false;
-    }
+    try {
+      console.log('[GitHubAutoCommit] Force committing changes...');
+      const response = await fetch('/api/git', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.token}`,
+        },
+        body: JSON.stringify({ 
+          message,
+          timestamp: new Date().toISOString(),
+          force: true
+        }),
+      });
 
-    return true;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Failed to commit changes: ${errorData.message || response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log('[GitHubAutoCommit] Force commit result:', result);
+      return result;
+    } catch (error) {
+      console.error('[GitHubAutoCommit] Failed to force commit changes:', error);
+      throw error;
+    }
   }
 
   /**
-   * Commit and push changes to the staging branch
+   * Regular commit and push to the staging branch
    */
   static async commitAndPush(message: string = 'Auto-commit changes') {
     if (typeof window === 'undefined') {
@@ -103,6 +122,23 @@ export class GitHubAutoCommitService {
   }
 
   /**
+   * Validate initialization and token
+   */
+  private static validateState(): boolean {
+    if (!this.initialized) {
+      console.error('[GitHubAutoCommit] Service not initialized');
+      return false;
+    }
+
+    if (!this.token) {
+      console.error('[GitHubAutoCommit] No valid GitHub token available');
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
    * Stop auto-commit functionality
    */
   static stopAutoCommit() {
@@ -113,3 +149,5 @@ export class GitHubAutoCommitService {
     }
   }
 }
+
+export default GitHubAutoCommitService;

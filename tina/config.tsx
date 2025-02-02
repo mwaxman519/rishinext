@@ -91,6 +91,12 @@ const config: TinaConfiguration = {
                     label: "Subheading",
                   },
                   {
+                    type: "image",
+                    name: "heroImage",
+                    label: "Hero Image",
+                    description: "The main image for the hero section",
+                  },
+                  {
                     type: "object",
                     name: "actions",
                     label: "Actions",
