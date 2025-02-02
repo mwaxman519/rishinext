@@ -1,0 +1,157 @@
+ Cleanest, Simplest Way to Get Full TinaCMS Functionality Working
+Since you don’t have Tina installed in staging, the most straightforward approach is to:
+
+Fully install Tina on staging (Replit).
+Ensure Tina pushes schema updates to static for indexing.
+Sync MDX content between staging and static.
+Run Tina Cloud admin UI from main (Vercel) while pulling content from static.
+Ensure the build process is smooth with GitHub Actions.
+🚀 Step 1: Install TinaCMS in staging
+Since staging is where you define schema & manage site builds, you must install TinaCMS there.
+
+📌 Run This in staging (Replit Terminal)
+bash
+Copy
+Edit
+npm install @tinacms/cli tinacms
+This will install Tina’s CLI and core packages.
+
+🚀 Step 2: Initialize Tina in staging
+After installing, initialize Tina to create necessary files.
+
+📌 Run This in staging:
+bash
+Copy
+Edit
+npx tinacms init
+This will: ✅ Create a tina/config.ts file
+✅ Generate an initial Tina schema
+✅ Setup Tina’s GraphQL queries
+
+🚀 Step 3: Define the Tina Schema in staging
+📌 Modify tina/config.ts in staging:
+
+ts
+Copy
+Edit
+import { defineConfig } from "tinacms";
+
+export default defineConfig({
+  branch: "static", // 🔹 All edits will sync to `static`
+  clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID, // Tina Cloud Client ID
+  token: process.env.TINA_TOKEN, // Tina Cloud Token
+  build: {
+    outputFolder: "admin",
+    publicFolder: "public",
+  },
+  media: {
+    tina: {
+      mediaRoot: "uploads",
+      publicFolder: "public",
+    },
+  },
+  schema: {
+    collections: [
+      {
+        name: "page",
+        label: "Pages",
+        path: "content/pages",
+        format: "mdx",
+        fields: [
+          { type: "string", name: "title", label: "Title", isTitle: true, required: true },
+          { type: "rich-text", name: "body", label: "Body", isBody: true },
+        ],
+      },
+      {
+        name: "post",
+        label: "Blog Posts",
+        path: "content/posts",
+        format: "mdx",
+        fields: [
+          { type: "string", name: "title", label: "Title", isTitle: true, required: true },
+          { type: "datetime", name: "date", label: "Date" },
+          { type: "rich-text", name: "body", label: "Body", isBody: true },
+        ],
+      },
+    ],
+  },
+});
+📌 Commit & Push to staging:
+
+bash
+Copy
+Edit
+git add tina/config.ts
+git commit -m "Initialize TinaCMS in staging"
+git push origin staging
+🚀 Step 4: Push the Tina Schema from staging to static
+Now that Tina is installed in staging, we need to push the schema to static so Tina Cloud can index it.
+
+📌 Run This in staging:
+
+bash
+Copy
+Edit
+npx tinacms schema:push --branch static
+✅ This ensures Tina Cloud recognizes static as the branch for live editing.
+
+🚀 Step 5: Sync MDX Content Between staging & static
+Since staging is where we manage content, we need bi-directional sync between: 1️⃣ staging/content/ → Push new MDX files to static/content/
+2️⃣ static/content/ → Pull down Tina edits back into staging/content/
+
+📌 Modify the GitHub Actions Workflow in staging:
+
+yaml
+Copy
+Edit
+name: Deploy Static Site
+
+on:
+  push:
+    branches:
+      - staging  # Runs when `staging` is updated
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: staging
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Sync MDX Content Bi-Directionally
+        run: |
+          git fetch origin static
+          git checkout static
+          git pull origin static
+          rsync -av --ignore-existing --delete ../static/content/ ./content/
+          rsync -av --ignore-existing ./content/ ../static/content/
+          git add content/
+          git commit -m "Sync MDX content between staging and static"
+          git push origin static
+          git checkout staging
+
+      - name: Build Static Site
+        run: npm run build
+
+      - name: Push Static Build to Static Branch
+        run: |
+          git checkout static
+          git pull origin static
+          git add out/
+          git commit -m "Auto-update static site build"
+          git push origin static
+📌 Commit & Push to staging:
+
+bash
+Copy
+Edit
+git add .github/workflows/build.yml
+git commit -m "Set up sync between staging and static"
+git push origin staging
