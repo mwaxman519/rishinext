@@ -5,6 +5,10 @@ export default defineConfig({
   branch: "main", // Must match your GitHub branch
   clientId: process.env.TINA_CLIENT_ID || "", // Set this in Vercel
   token: process.env.TINA_TOKEN || "", // Set this in Vercel
+  build: {
+    outputFolder: "admin",
+    publicFolder: "public", // 👈 Add this to fix the build error
+  },
   schema: {
     collections: [
       {
