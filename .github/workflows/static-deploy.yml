@@ -1,0 +1,45 @@
+name: Deploy Static Build
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'out/**'
+
+jobs:
+  deploy-static:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Deploy to static branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Create and switch to a new temporary branch
+          git checkout -b temp-deploy
+
+          # Remove everything except the out directory
+          find . -mindepth 1 -maxdepth 1 ! -name 'out' ! -name '.git' -exec rm -rf {} +
+
+          # Move contents from out to root
+          mv out/* .
+          rm -rf out
+
+          # Stage all changes
+          git add -A
+
+          # Commit changes
+          git commit -m "Deploy static build from main branch"
+
+          # Force push to static branch
+          git push -f origin HEAD:static
