@@ -31,22 +31,6 @@ const nextConfig = {
   experimental: {
     mdxRs: true,
     serverComponentsExternalPackages: ['@mdx-js/react']
-  },
-  webpack: (config) => {
-    // Development server configuration
-    config.watchOptions = {
-      poll: 1000,
-      aggregateTimeout: 300,
-      ignored: ['**/node_modules', '**/.git', '**/.next']
-    };
-
-    // Enable HMR
-    config.optimization = {
-      ...config.optimization,
-      moduleIds: 'deterministic'
-    };
-
-    return config;
   }
 };
 

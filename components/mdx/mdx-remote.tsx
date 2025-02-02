@@ -1,20 +1,32 @@
-'use client';
-
-import React from 'react';
-import { MDXContent } from './mdx-content';
+import { MDXRemote as NextMDXRemote } from 'next-mdx-remote/rsc';
+import { components } from './mdx-components';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 interface MDXRemoteProps {
-  children: React.ReactNode;
+  source: string;
 }
 
-export function MDXClientRenderer({ children }: MDXRemoteProps) {
-  if (!children) {
-    return null;
-  }
-
+export async function MDXRemote({ source }: MDXRemoteProps) {
   return (
-    <MDXContent>
-      {children}
-    </MDXContent>
+    <div className="mdx-content prose dark:prose-invert max-w-none">
+      <NextMDXRemote
+        source={source}
+        components={components}
+        options={{
+          mdxOptions: {
+            rehypePlugins: [
+              rehypeSlug,
+              [rehypeAutolinkHeadings, { 
+                behavior: 'wrap',
+                properties: {
+                  className: ['anchor']
+                }
+              }]
+            ],
+          }
+        }}
+      />
+    </div>
   );
 }
