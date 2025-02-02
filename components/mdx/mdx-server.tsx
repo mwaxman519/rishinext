@@ -2,7 +2,6 @@ import { compileMDX } from 'next-mdx-remote/rsc';
 import { components } from './mdx-components';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import { MDXContent } from './mdx-content';
 
 interface MDXServerProps {
   source: string;
@@ -14,8 +13,9 @@ export async function MDXServer({ source }: MDXServerProps) {
   }
 
   try {
-    const result = await compileMDX({
+    const { content } = await compileMDX({
       source,
+      components,
       options: {
         mdxOptions: {
           remarkPlugins: [],
@@ -28,11 +28,16 @@ export async function MDXServer({ source }: MDXServerProps) {
               }
             }]
           ],
-        }
+        },
+        parseFrontmatter: true,
       }
     });
 
-    return <MDXContent>{result.content}</MDXContent>;
+    return (
+      <div className="mdx-content">
+        {content}
+      </div>
+    );
   } catch (error) {
     console.error('MDX compilation error:', error);
     return (
