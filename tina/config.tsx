@@ -23,6 +23,8 @@ export default defineConfig({
       publicFolder: "public",
     },
   },
+  // Disable local mode completely
+  localContentPath: undefined,
   schema: {
     collections: [
       {
