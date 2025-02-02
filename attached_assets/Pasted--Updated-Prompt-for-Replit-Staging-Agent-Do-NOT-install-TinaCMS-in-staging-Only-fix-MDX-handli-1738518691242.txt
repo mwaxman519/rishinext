@@ -1,0 +1,107 @@
+🚀 Updated Prompt for Replit Staging Agent
+🚨 Do NOT install TinaCMS in staging. Only fix MDX handling and sync content from static.
+
+✅ 1. Fix Directory Structure
+1️⃣ Delete any duplicate static/ folder inside staging.
+
+The staging branch should read MDX from static/content/.
+If the agent added a staging/static/ folder, DELETE IT.
+Do NOT store MDX inside staging. TinaCMS manages that in static.
+✅ Final Correct Structure (staging)
+
+java
+Copy
+Edit
+📂 staging (branch)
+ ┣ 📂 pages
+ ┣ 📂 components
+ ┣ 📂 public
+ ┣ 📂 static (GitHub `static` branch reference)
+ ┃ ┣ 📂 content
+ ┃ ┃ ┣ 📂 pages
+ ┃ ┃ ┣ 📂 posts
+ ┣ 📜 package.json
+ ┣ 📜 next.config.js
+ ┣ 📜 README.md
+🚨 Do NOT install TinaCMS here. staging should only read MDX from static.
+
+✅ 2. Fix Next.js to Load MDX from static/content/
+2️⃣ Update Next.js dynamic routes (pages/[slug].tsx) to fetch MDX from static/content/.
+
+tsx
+Copy
+Edit
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
+import { serialize } from "next-mdx-remote/serialize";
+import { MDXRemote } from "next-mdx-remote";
+import remarkGfm from "remark-gfm";
+
+export default function Page({ source, frontMatter }) {
+  return (
+    <div>
+      <h1>{frontMatter.title}</h1>
+      <MDXRemote {...source} />
+    </div>
+  );
+}
+
+// ✅ Load MDX from `static/content/pages/`
+export async function getStaticProps({ params }) {
+  const mdxPath = path.join("..", "static", "content", "pages", `${params.slug}.mdx`);
+  const fileContents = fs.readFileSync(mdxPath, "utf8");
+  const { content, data } = matter(fileContents);
+
+  const mdxSource = await serialize(content, { mdxOptions: { remarkPlugins: [remarkGfm] } });
+
+  return {
+    props: {
+      source: mdxSource,
+      frontMatter: data,
+    },
+  };
+}
+
+// ✅ Generate dynamic paths from `static/content/pages/`
+export async function getStaticPaths() {
+  const dirPath = path.join("..", "static", "content", "pages");
+  const filenames = fs.readdirSync(dirPath);
+  const paths = filenames.map((file) => ({
+    params: { slug: file.replace(".mdx", "") },
+  }));
+
+  return {
+    paths,
+    fallback: false,
+  };
+}
+✅ 3. Sync static Content Before Each Build
+3️⃣ Ensure staging always pulls the latest MDX content from static before running npm run build.
+
+✅ Add this command to Replit's build process:
+
+bash
+Copy
+Edit
+# Ensure you're on `staging` branch
+git checkout staging
+
+# Pull latest MDX content from `static`
+git fetch origin static
+git checkout static
+git pull origin static
+
+# Switch back to `staging`
+git checkout staging
+
+# Run Next.js build
+npm run build
+🚨 This ensures every build includes the latest MDX changes from static.
+
+🚀 Final Steps
+✔ Delete any extra static/ folder inside staging.
+✔ Ensure staging reads MDX from static/content/.
+✔ Sync static content before every build.
+✔ Test: Edit content in TinaCMS (main), then check if staging builds the new content.
+
