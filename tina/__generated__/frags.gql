@@ -1,0 +1,15 @@
+fragment PostParts on Post {
+  __typename
+  title
+  description
+  date
+  body
+}
+
+fragment GlobalParts on Global {
+  __typename
+  siteTitle
+  tagline
+  logo
+  footerContent
+}

@@ -47,6 +47,14 @@ const nextConfig = {
   experimental: {
     mdxRs: true,
   },
+  async rewrites() {
+    return [
+      {
+        source: '/admin',
+        destination: '/admin/index.html',
+      },
+    ];
+  },
 };
 
 export default withMDX(nextConfig);
