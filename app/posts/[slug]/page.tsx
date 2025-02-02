@@ -1,9 +1,8 @@
 import { Container } from '@/components/layout/container';
 import { getStaticDataBySlug, getAllSlugs } from '@/lib/get-static-data';
-import { MDXContent } from '@/components/mdx/mdx-components';
+import { MDXContent } from '@/components/mdx/mdx-content';
 import { notFound } from 'next/navigation';
 
-// Force static generation
 export const dynamic = 'force-static';
 export const revalidate = false;
 
@@ -11,7 +10,6 @@ interface PageProps {
   params: { slug: string };
 }
 
-// Generate all possible paths at build time
 export async function generateStaticParams() {
   const slugs = await getAllSlugs();
   return slugs.map((slug) => ({
@@ -19,32 +17,16 @@ export async function generateStaticParams() {
   }));
 }
 
-// Get data for a specific post
-async function getData(slug: string) {
-  try {
-    const post = await getStaticDataBySlug(slug);
-    if (!post) {
-      return null;
-    }
-    return { post };
-  } catch (error) {
-    console.error('Error fetching post:', error);
-    return null;
-  }
-}
-
 export default async function Post({ params }: PageProps) {
-  const data = await getData(params.slug);
+  const post = await getStaticDataBySlug(params.slug);
 
-  if (!data) {
+  if (!post) {
     notFound();
   }
 
-  const { post } = data;
-
   return (
     <Container className="py-12">
-      <article className="prose dark:prose-invert mx-auto">
+      <article className="mx-auto">
         <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
         {post.date && (
           <p className="text-sm text-muted-foreground mb-8">

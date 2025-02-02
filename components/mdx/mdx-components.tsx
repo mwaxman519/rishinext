@@ -1,25 +1,26 @@
+"use client";
+
 import type { MDXComponents } from 'mdx/types';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import type { ImageProps as NextImageProps } from 'next/image';
 import type { DetailedHTMLProps, ImgHTMLAttributes } from 'react';
-import { Suspense } from 'react';
 
 type ImageProps = DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
 
 const components: MDXComponents = {
   h1: ({ children }) => (
-    <h1 className="text-4xl font-bold mb-6 scroll-m-20" id={children?.toString().toLowerCase().replace(/\s+/g, '-')}>
+    <h1 className="text-4xl font-bold mb-6 scroll-m-20">
       {children}
     </h1>
   ),
   h2: ({ children }) => (
-    <h2 className="text-3xl font-bold mb-4 scroll-m-20" id={children?.toString().toLowerCase().replace(/\s+/g, '-')}>
+    <h2 className="text-3xl font-bold mb-4 scroll-m-20">
       {children}
     </h2>
   ),
   h3: ({ children }) => (
-    <h3 className="text-2xl font-bold mb-3 scroll-m-20" id={children?.toString().toLowerCase().replace(/\s+/g, '-')}>
+    <h3 className="text-2xl font-bold mb-3 scroll-m-20">
       {children}
     </h3>
   ),
@@ -40,11 +41,11 @@ const components: MDXComponents = {
       {children}
     </blockquote>
   ),
-  pre: ({ children, className, ...props }) => (
+  pre: ({ children, className }) => (
     <pre className={cn(
       "mb-4 mt-2 overflow-x-auto rounded-lg bg-black py-4 px-4",
       className
-    )} {...props}>
+    )}>
       {children}
     </pre>
   ),
@@ -71,9 +72,8 @@ const components: MDXComponents = {
       return null;
     }
 
-    const src = props.src.startsWith('http') ? props.src : props.src;
     const imgProps: NextImageProps = {
-      src,
+      src: props.src,
       alt: props.alt || 'Article image',
       width: 800,
       height: 400,
@@ -81,18 +81,16 @@ const components: MDXComponents = {
     };
 
     return (
-      <Suspense fallback={<div className="w-full h-[400px] bg-muted animate-pulse rounded-lg" />}>
-        <figure className="my-8">
-          <div className="overflow-hidden rounded-lg border border-border">
-            <Image {...imgProps} />
-          </div>
-          {props.alt && (
-            <figcaption className="mt-2 text-center text-sm text-muted-foreground">
-              {props.alt}
-            </figcaption>
-          )}
-        </figure>
-      </Suspense>
+      <figure className="my-8">
+        <div className="overflow-hidden rounded-lg border border-border">
+          <Image {...imgProps} alt={props.alt || 'Article image'} />
+        </div>
+        {props.alt && (
+          <figcaption className="mt-2 text-center text-sm text-muted-foreground">
+            {props.alt}
+          </figcaption>
+        )}
+      </figure>
     );
   },
   table: ({ children }) => (
@@ -116,12 +114,4 @@ const components: MDXComponents = {
 
 export function useMDXComponents() {
   return components;
-}
-
-export function MDXContent({ content }: { content: string }) {
-  return (
-    <article className="prose dark:prose-invert max-w-none">
-      {content}
-    </article>
-  );
 }
