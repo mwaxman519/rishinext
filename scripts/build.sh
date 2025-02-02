@@ -8,11 +8,9 @@ log() {
 
 log "Starting static build process..."
 
-# Sync content from static branch
+# Run content sync first
 log "Syncing content from static branch..."
-if [ ! -d "static/content" ]; then
-    mkdir -p static/content
-fi
+bash ./scripts/sync-static.sh
 
 # Clean up previous builds
 log "Cleaning up previous builds..."

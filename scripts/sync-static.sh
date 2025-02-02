@@ -3,34 +3,31 @@
 # Exit on error
 set -e
 
-echo "Starting static site sync process..."
+echo "Starting static content sync process..."
 
 # Ensure the content directory exists
-mkdir -p content/pages
-mkdir -p content/global
+if [ ! -d "static/content" ]; then
+    echo "Creating content directories..."
+    mkdir -p static/content/pages
+    mkdir -p static/content/posts
+    mkdir -p static/content/global
+fi
 
-# Build the site
-echo "Building site..."
-npm run build
+# Pull latest content from static branch if we're in a git repository
+if [ -d ".git" ]; then
+    echo "Syncing content from static branch..."
+    git fetch origin static || true
+    git checkout static -- static/content || true
+    git checkout staging
+fi
 
-# Create or update the static branch
-echo "Switching to static branch..."
-git checkout static 2>/dev/null || git checkout -b static
-git pull origin static || true
+# Verify content directories
+echo "Verifying content structure..."
+for dir in "pages" "posts" "global"; do
+    if [ ! -d "static/content/$dir" ]; then
+        echo "Creating static/content/$dir directory..."
+        mkdir -p "static/content/$dir"
+    fi
+done
 
-# Copy the built files
-echo "Copying built files..."
-cp -r out/* .
-cp -r public/* .
-
-# Add and commit changes
-echo "Committing changes..."
-git add .
-git commit -m "Sync static site $(date +%Y-%m-%d-%H-%M-%S)" || true
-git push origin static
-
-# Return to staging branch
-echo "Returning to staging branch..."
-git checkout staging
-
-echo "Static site sync complete!"
+echo "Content sync complete!"
