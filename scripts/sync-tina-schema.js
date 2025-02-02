@@ -1,5 +1,5 @@
-import { createClient } from "tinacms/dist/client";
 import { join } from 'path';
+import { readFileSync } from 'fs';
 
 async function syncTinaSchema() {
   try {
@@ -17,35 +17,44 @@ async function syncTinaSchema() {
     console.log(`Using branch: ${branch}`);
     console.log(`Using client ID: ${clientId.substring(0, 8)}...`);
 
-    // Create Tina client with proper configuration
-    const client = createClient({ 
-      cacheDir: join(process.cwd(), 'tina/__generated__/.cache'),
-      url: `https://content.tinajs.io/1.5/content/${clientId}/github/${branch}`,
-      token,
-      queries,
-    });
-
-    // Load and validate schema
+    // Load schema file
     const schemaPath = join(process.cwd(), 'tina/config.tsx');
     console.log('Loading schema from:', schemaPath);
 
-    // Initialize client and sync schema
-    await client.request({
-      query: `
-        mutation PushSchema($schema: JSON!) {
-          pushSchema(schema: $schema)
-        }
-      `,
-      variables: {
-        schema: {
-          path: 'tina/config.tsx',
-          format: 'tsx',
-        }
-      }
+    // Read schema file content
+    const schemaContent = readFileSync(schemaPath, 'utf8');
+
+    // Send schema update request to Tina Cloud
+    const response = await fetch(`https://api.tina.io/v1/organizations/self/projects/${clientId}/schema`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        schema: schemaContent,
+        branch,
+        extensions: ['.tsx', '.ts', '.mdx', '.md']
+      })
     });
 
+    const responseText = await response.text();
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch (e) {
+      console.error('Raw response:', responseText);
+      throw new Error(`Invalid JSON response: ${responseText}`);
+    }
+
+    if (!response.ok) {
+      throw new Error(`Failed to update schema: ${result.message || response.statusText}`);
+    }
+
+    console.log('Schema sync result:', result);
     console.log('Schema sync complete');
-    console.log('You can now run \`npx tinacms build\`');
+    console.log('You can now run `npx tinacms build`');
 
   } catch (error) {
     console.error('Failed to sync schema:', error);
