@@ -1,13 +1,12 @@
-// tina/config.ts
 import { defineConfig } from "tinacms";
 
 export default defineConfig({
-  branch: "main", // Must match your GitHub branch
-  clientId: process.env.TINA_CLIENT_ID || "", // Set this in Vercel
-  token: process.env.TINA_TOKEN || "", // Set this in Vercel
+  branch: "main", // Ensure this matches your GitHub branch
+  clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID || "", // Matches the variable from your screenshot
+  token: process.env.TINA_TOKEN || "", // Matches the variable from your screenshot
   build: {
     outputFolder: "admin",
-    publicFolder: "public", // 👈 Add this to fix the build error
+    publicFolder: "public",
   },
   schema: {
     collections: [
