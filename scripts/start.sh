@@ -1,18 +1,37 @@
 #!/bin/bash
+set -e
 
-# Kill any existing Next.js processes
-pkill -f "next" || true
-pkill -f "node" || true
+# Function to log messages with timestamps
+log() {
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+}
+
+# Function to cleanup processes
+cleanup() {
+  log "Cleaning up processes..."
+  pkill -f "next" || true
+  pkill -f "node" || true
+}
+
+# Set up error handling
+trap cleanup EXIT
+
+log "Starting Next.js development server..."
 
 # Clean up cache directories
+log "Cleaning cache directories..."
 rm -rf .next node_modules/.cache
 
 # Wait for port 3000 to be available
 while lsof -i :3000 >/dev/null 2>&1; do
-  echo "Waiting for port 3000 to become available..."
+  log "Waiting for port 3000 to become available..."
   sleep 1
 done
 
+# Set development environment
+export NODE_ENV=development
+export NEXT_TELEMETRY_DISABLED=1
+
 # Start Next.js server and wait for health check
-echo "Starting Next.js server..."
+log "Starting Next.js server..."
 exec next dev --hostname 0.0.0.0 --port 3000

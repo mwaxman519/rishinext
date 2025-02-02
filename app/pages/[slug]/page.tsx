@@ -15,8 +15,27 @@ export default async function Page({ params }: PageProps) {
   const { slug } = params;
 
   try {
-    const contentPath = path.join(process.cwd(), 'static', 'content', 'pages', `${slug}.mdx`);
-    const source = await fs.readFile(contentPath, 'utf-8');
+    // Try both content paths
+    const contentPaths = [
+      path.join(process.cwd(), 'content', 'pages', `${slug}.mdx`),
+      path.join(process.cwd(), 'static', 'content', 'pages', `${slug}.mdx`)
+    ];
+
+    let source: string | null = null;
+    for (const contentPath of contentPaths) {
+      try {
+        source = await fs.readFile(contentPath, 'utf-8');
+        break;
+      } catch (error) {
+        continue;
+      }
+    }
+
+    if (!source) {
+      console.error(`No MDX file found for slug: ${slug}`);
+      return notFound();
+    }
+
     const { content, data } = matter(source);
 
     return (
@@ -39,13 +58,29 @@ export default async function Page({ params }: PageProps) {
 }
 
 export async function generateStaticParams() {
+  const contentPaths = [
+    path.join(process.cwd(), 'content', 'pages'),
+    path.join(process.cwd(), 'static', 'content', 'pages')
+  ];
+
   try {
-    const files = await fs.readdir(path.join(process.cwd(), 'static', 'content', 'pages'));
-    return files
-      .filter(file => file.endsWith('.mdx'))
-      .map(file => ({
-        slug: file.replace(/\.mdx$/, '')
-      }));
+    const allFiles = new Set<string>();
+
+    for (const contentPath of contentPaths) {
+      try {
+        const files = await fs.readdir(contentPath);
+        files
+          .filter(file => file.endsWith('.mdx'))
+          .forEach(file => allFiles.add(file));
+      } catch (error) {
+        console.warn(`Warning: Could not read directory ${contentPath}`, error);
+        continue;
+      }
+    }
+
+    return Array.from(allFiles).map(file => ({
+      slug: file.replace(/\.mdx$/, '')
+    }));
   } catch (error) {
     console.error('Failed to generate static params:', error);
     return [];
