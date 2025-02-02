@@ -1,18 +1,13 @@
 // tina/config.tsx
 import { defineConfig } from "tinacms";
 var config_default = defineConfig({
-  branch: "static",
+  branch: process.env.NEXT_PUBLIC_TINA_BRANCH || "static",
+  // Default to static branch
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID,
   token: process.env.TINA_TOKEN,
   build: {
     outputFolder: "admin",
     publicFolder: "public"
-  },
-  media: {
-    tina: {
-      mediaRoot: "uploads",
-      publicFolder: "public"
-    }
   },
   schema: {
     collections: [
@@ -65,6 +60,12 @@ var config_default = defineConfig({
         ]
       }
     ]
+  },
+  media: {
+    tina: {
+      mediaRoot: "uploads",
+      publicFolder: "public"
+    }
   }
 });
 export {

@@ -20,8 +20,7 @@ const tinacms = spawn('npx', ['tinacms', 'dev', '--port', '4001'], {
   env: {
     ...process.env,
     TINA_PUBLIC_IS_LOCAL: 'true',
-    PORT: '4001',
-    DEBUG: 'tinacms:*'
+    PORT: '4001'
   }
 });
 

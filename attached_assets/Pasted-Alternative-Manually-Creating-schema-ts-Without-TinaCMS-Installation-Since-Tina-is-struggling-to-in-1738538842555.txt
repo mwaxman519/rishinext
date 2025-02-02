@@ -1,0 +1,95 @@
+Alternative: Manually Creating schema.ts Without TinaCMS Installation
+Since Tina is struggling to install and generate schema.ts correctly, we can manually create the required file without relying on Tina's CLI.
+
+🚀 Step 1: Manually Create schema.ts in static
+📌 Create static/tina/schema.ts with the following content:
+
+ts
+Copy
+Edit
+import { defineSchema } from "tinacms";
+
+export default defineSchema({
+  collections: [
+    {
+      name: "page",
+      label: "Pages",
+      path: "content/pages",
+      format: "mdx",
+      fields: [
+        {
+          type: "string",
+          name: "title",
+          label: "Title",
+          isTitle: true,
+          required: true,
+        },
+        {
+          type: "string",
+          name: "description",
+          label: "Description",
+          ui: {
+            component: "textarea",
+          },
+        },
+        {
+          type: "rich-text",
+          name: "body",
+          label: "Body",
+          isBody: true,
+        },
+      ],
+    },
+    {
+      name: "post",
+      label: "Blog Posts",
+      path: "content/posts",
+      format: "mdx",
+      fields: [
+        {
+          type: "string",
+          name: "title",
+          label: "Title",
+          isTitle: true,
+          required: true,
+        },
+        {
+          type: "datetime",
+          name: "date",
+          label: "Date",
+        },
+        {
+          type: "rich-text",
+          name: "body",
+          label: "Body",
+          isBody: true,
+        },
+      ],
+    },
+  ],
+});
+📌 Save this file as static/tina/schema.ts, then commit and push it:
+
+bash
+Copy
+Edit
+cd static
+git add tina/schema.ts
+git commit -m "Manually created schema.ts for Tina Cloud indexing"
+git push origin static
+✅ Now schema.ts is manually created without needing TinaCMS to generate it.
+
+🚀 Step 2: Push Schema to Tina Cloud
+Now that we have the required file in static, we need to force Tina Cloud to recognize it.
+
+📌 Push the schema manually:
+
+bash
+Copy
+Edit
+npx tinacms schema:push --branch static --force
+📌 Then, manually trigger a reindex in Tina Cloud: 1️⃣ Go to Tina Cloud → Your Project → Indexing.
+2️⃣ Click "Reindex" to force indexing of static.
+
+✅ This should resolve the Tina Cloud indexing issue.
+
