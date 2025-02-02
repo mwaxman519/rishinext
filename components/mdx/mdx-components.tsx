@@ -8,7 +8,7 @@ import type { DetailedHTMLProps, ImgHTMLAttributes } from 'react';
 
 type ImageProps = DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
 
-const components: MDXComponents = {
+export const components: MDXComponents = {
   h1: ({ children }) => (
     <h1 className="text-4xl font-bold mb-6 scroll-m-20">
       {children}
@@ -111,7 +111,3 @@ const components: MDXComponents = {
     </td>
   ),
 };
-
-export function useMDXComponents() {
-  return components;
-}

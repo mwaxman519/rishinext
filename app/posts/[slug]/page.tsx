@@ -1,7 +1,8 @@
 import { Container } from '@/components/layout/container';
 import { getStaticDataBySlug, getAllSlugs } from '@/lib/get-static-data';
-import { MDXContent } from '@/components/mdx/mdx-content';
+import { MDXServer } from '@/components/mdx/mdx-server';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 export const dynamic = 'force-static';
 export const revalidate = false;
@@ -38,7 +39,9 @@ export default async function Post({ params }: PageProps) {
             {post.description}
           </p>
         )}
-        <MDXContent content={post.content} />
+        <Suspense fallback={<Loading />}>
+          <MDXServer source={post.content} />
+        </Suspense>
       </article>
     </Container>
   );
