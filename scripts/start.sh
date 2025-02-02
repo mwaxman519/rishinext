@@ -22,6 +22,11 @@ log "Starting Next.js development server..."
 log "Cleaning cache directories..."
 rm -rf .next node_modules/.cache
 
+# Ensure content directories exist
+log "Checking content directories..."
+mkdir -p content/pages
+mkdir -p static/content/pages
+
 # Wait for port 3000 to be available
 while lsof -i :3000 >/dev/null 2>&1; do
   log "Waiting for port 3000 to become available..."
@@ -31,6 +36,7 @@ done
 # Set development environment
 export NODE_ENV=development
 export NEXT_TELEMETRY_DISABLED=1
+export NEXT_DEBUG_MDX=true # Enable MDX debug logging
 
 # Start Next.js server and wait for health check
 log "Starting Next.js server..."
