@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import type { ImageProps as NextImageProps } from 'next/image';
 import type { DetailedHTMLProps, ImgHTMLAttributes } from 'react';
+import { Suspense } from 'react';
 
 type ImageProps = DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
 
@@ -70,27 +71,28 @@ const components: MDXComponents = {
       return null;
     }
 
-    // Handle both relative and absolute URLs
     const src = props.src.startsWith('http') ? props.src : props.src;
     const imgProps: NextImageProps = {
       src,
-      alt: props.alt || 'Article image', // Ensure alt text is always present
+      alt: props.alt || 'Article image',
       width: 800,
       height: 400,
       className: cn("w-full h-auto", props.className)
     };
 
     return (
-      <figure className="my-8">
-        <div className="overflow-hidden rounded-lg border border-border">
-          <Image {...imgProps} />
-        </div>
-        {props.alt && (
-          <figcaption className="mt-2 text-center text-sm text-muted-foreground">
-            {props.alt}
-          </figcaption>
-        )}
-      </figure>
+      <Suspense fallback={<div className="w-full h-[400px] bg-muted animate-pulse rounded-lg" />}>
+        <figure className="my-8">
+          <div className="overflow-hidden rounded-lg border border-border">
+            <Image {...imgProps} />
+          </div>
+          {props.alt && (
+            <figcaption className="mt-2 text-center text-sm text-muted-foreground">
+              {props.alt}
+            </figcaption>
+          )}
+        </figure>
+      </Suspense>
     );
   },
   table: ({ children }) => (
@@ -117,5 +119,9 @@ export function useMDXComponents() {
 }
 
 export function MDXContent({ content }: { content: string }) {
-  return <div className="mdx-content prose dark:prose-invert">{content}</div>;
+  return (
+    <article className="prose dark:prose-invert max-w-none">
+      {content}
+    </article>
+  );
 }
