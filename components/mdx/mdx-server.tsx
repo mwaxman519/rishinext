@@ -1,6 +1,8 @@
 import { compileMDX } from 'next-mdx-remote/rsc';
 import { MDXContent } from './mdx-content';
 import { components } from './mdx-components';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 interface MDXServerProps {
   source: string;
@@ -19,7 +21,15 @@ export async function MDXServer({ source }: MDXServerProps) {
         parseFrontmatter: true,
         mdxOptions: {
           remarkPlugins: [],
-          rehypePlugins: [],
+          rehypePlugins: [
+            rehypeSlug,
+            [rehypeAutolinkHeadings, { 
+              behavior: 'wrap',
+              properties: {
+                className: ['anchor']
+              }
+            }]
+          ],
           development: process.env.NODE_ENV === 'development',
         },
       },

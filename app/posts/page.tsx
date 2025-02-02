@@ -10,7 +10,13 @@ export const revalidate = false;
 async function getData() {
   try {
     const posts = await getStaticData();
-    return { posts };
+    // Sort posts by date in descending order
+    return { 
+      posts: posts.sort((a, b) => {
+        if (!a.date || !b.date) return 0;
+        return new Date(b.date).getTime() - new Date(a.date).getTime()
+      })
+    };
   } catch (error) {
     console.error('Error fetching posts:', error);
     return { posts: [] };

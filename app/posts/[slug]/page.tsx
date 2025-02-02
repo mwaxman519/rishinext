@@ -27,19 +27,29 @@ export default async function Post({ params }: PageProps) {
 
   return (
     <Container className="py-12">
-      <article className="mx-auto">
-        <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
-        {post.date && (
-          <p className="text-sm text-muted-foreground mb-8">
-            {new Date(post.date).toLocaleDateString()}
-          </p>
-        )}
-        {post.description && (
-          <p className="text-xl text-muted-foreground mb-8">
-            {post.description}
-          </p>
-        )}
-        <Suspense fallback={<Loading />}>
+      <article className="mx-auto max-w-4xl">
+        <header className="mb-8">
+          <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
+          {post.description && (
+            <p className="text-xl text-muted-foreground mb-4">
+              {post.description}
+            </p>
+          )}
+          {post.date && (
+            <time dateTime={post.date} className="text-sm text-muted-foreground">
+              {new Date(post.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </time>
+          )}
+        </header>
+        <Suspense fallback={<div className="animate-pulse space-y-4">
+          <div className="h-4 bg-muted rounded w-3/4" />
+          <div className="h-4 bg-muted rounded w-full" />
+          <div className="h-4 bg-muted rounded w-5/6" />
+        </div>}>
           <MDXServer source={post.content} />
         </Suspense>
       </article>
