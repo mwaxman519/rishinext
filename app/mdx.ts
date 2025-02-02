@@ -12,20 +12,21 @@ const contentDirectory = path.join(process.cwd(), 'content');
 export async function getMDXContent(contentPath: string) {
   try {
     const fullPath = path.join(contentDirectory, `${contentPath}.mdx`);
-    const source = fs.readFileSync(fullPath, 'utf8');
+    if (!fs.existsSync(fullPath)) {
+      throw new Error(`Content not found: ${contentPath}`);
+    }
 
+    const source = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(source);
 
     const { content: compiledContent } = await compileMDX({
       source: content,
-      components,
       options: {
-        parseFrontmatter: true,
         mdxOptions: {
           remarkPlugins: [remarkGfm],
           rehypePlugins: [
             rehypeSlug,
-            [rehypeAutolinkHeadings, { 
+            [rehypeAutolinkHeadings, {
               behavior: 'wrap',
               properties: {
                 className: ['anchor']
@@ -33,7 +34,8 @@ export async function getMDXContent(contentPath: string) {
             }]
           ],
         }
-      }
+      },
+      components
     });
 
     return {
@@ -42,7 +44,7 @@ export async function getMDXContent(contentPath: string) {
     };
   } catch (error) {
     console.error('Error processing MDX content:', error);
-    throw new Error(`Failed to process MDX content: ${error.message}`);
+    throw error;
   }
 }
 
