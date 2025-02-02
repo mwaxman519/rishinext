@@ -1,8 +1,8 @@
 import { compileMDX } from 'next-mdx-remote/rsc';
-import { MDXClientRenderer } from './mdx-remote';
+import { components } from './mdx-components';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
+import { MDXContent } from './mdx-content';
 
 interface MDXServerProps {
   source: string;
@@ -10,46 +10,38 @@ interface MDXServerProps {
 
 export async function MDXServer({ source }: MDXServerProps) {
   if (!source) {
-    throw new Error('No content provided to MDX renderer');
+    return null;
   }
 
   try {
     const result = await compileMDX({
       source,
       options: {
-        parseFrontmatter: true,
         mdxOptions: {
           remarkPlugins: [],
           rehypePlugins: [
             rehypeSlug,
-            [
-              rehypeAutolinkHeadings, 
-              { 
-                behavior: 'wrap',
-                properties: {
-                  className: ['anchor'],
-                  ariaLabel: 'Link to section'
-                }
+            [rehypeAutolinkHeadings, { 
+              behavior: 'wrap',
+              properties: {
+                className: ['anchor']
               }
-            ]
+            }]
           ],
-          format: 'mdx',
-          development: process.env.NODE_ENV === 'development',
-        },
-      },
-    }) as unknown as { content: MDXRemoteSerializeResult };
+        }
+      }
+    });
 
-    return (
-      <div className="mdx-content">
-        <MDXClientRenderer source={result.content} />
-      </div>
-    );
+    return <MDXContent>{result.content}</MDXContent>;
   } catch (error) {
     console.error('MDX compilation error:', error);
-    throw new Error(
-      error instanceof Error 
-        ? `Failed to compile MDX: ${error.message}`
-        : 'An unknown error occurred while compiling MDX'
+    return (
+      <div className="p-4 rounded-lg border border-destructive bg-destructive/10">
+        <h3 className="text-lg font-semibold mb-2">Error Rendering Content</h3>
+        <p className="text-sm text-muted-foreground">
+          {error instanceof Error ? error.message : 'An unknown error occurred while rendering content'}
+        </p>
+      </div>
     );
   }
 }
