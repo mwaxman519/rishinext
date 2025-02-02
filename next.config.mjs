@@ -27,7 +27,12 @@ const nextConfig = {
     unoptimized: true,
   },
   reactStrictMode: true,
-  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx']
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
+  // Ensure static files are handled correctly
+  experimental: {
+    mdxRs: true,
+    serverComponentsExternalPackages: ['@mdx-js/react']
+  }
 };
 
 export default withMDX(nextConfig);

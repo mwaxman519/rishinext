@@ -8,6 +8,12 @@ log() {
 
 log "Starting static build process..."
 
+# Sync content from static branch
+log "Syncing content from static branch..."
+if [ ! -d "static/content" ]; then
+    mkdir -p static/content
+fi
+
 # Clean up previous builds
 log "Cleaning up previous builds..."
 rm -rf .next out

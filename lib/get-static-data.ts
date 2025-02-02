@@ -10,8 +10,8 @@ export type StaticData = {
   date?: string;
 };
 
-// Ensure content directory exists
-const CONTENT_DIRECTORY = path.join(process.cwd(), 'content');
+// Update paths to read from static/content directory
+const CONTENT_DIRECTORY = path.join(process.cwd(), 'static', 'content');
 const POSTS_DIRECTORY = path.join(CONTENT_DIRECTORY, 'posts');
 const PAGES_DIRECTORY = path.join(CONTENT_DIRECTORY, 'pages');
 
