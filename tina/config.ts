@@ -33,12 +33,34 @@ export default defineConfig({
             type: "string",
             name: "description",
             label: "Description",
+            ui: {
+              component: "textarea",
+            },
           },
           {
             type: "rich-text",
             name: "body",
             label: "Body",
             isBody: true,
+            templates: [
+              {
+                name: "callout",
+                label: "Callout",
+                fields: [
+                  {
+                    name: "type",
+                    label: "Type",
+                    type: "string",
+                    options: ["info", "warning", "success", "error"],
+                  },
+                  {
+                    name: "text",
+                    label: "Text",
+                    type: "string",
+                  },
+                ],
+              },
+            ],
           }
         ],
       }
