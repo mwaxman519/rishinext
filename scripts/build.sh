@@ -29,4 +29,10 @@ if [ -f "out/404.html" ]; then
     cp out/404.html out/404/index.html
 fi
 
+# Verify content was properly synced and exists in the build
+log "Verifying content in build..."
+if [ ! -d "out/posts" ] || [ ! -d "out/pages" ]; then
+    log "Warning: Content directories not found in build output"
+fi
+
 log "Static build completed successfully!"
