@@ -24,22 +24,30 @@ export class GitHubAutoCommitService {
                    : process.env.GITHUB_TOKEN);
 
     if (!token) {
-      console.error('[GitHubAutoCommit] GitHub token not found in environment variables');
+      console.log('[GitHubAutoCommit] No GitHub token found - auto-commit functionality will be disabled');
       return;
     }
 
     this.token = token;
     this.initialized = true;
     this.lastCommitTime = Date.now();
-    console.log('[GitHubAutoCommit] Service initialized with token');
+    console.log('[GitHubAutoCommit] Service initialized successfully');
+  }
+
+  /**
+   * Check if auto-commit is enabled
+   */
+  static isEnabled(): boolean {
+    return this.initialized && !!this.token;
   }
 
   /**
    * Force a commit and push immediately, bypassing debounce
    */
   static async forceCommitAndPush(message: string) {
-    if (!this.validateState()) {
-      throw new Error('GitHub auto-commit service not properly initialized');
+    if (!this.isEnabled()) {
+      console.log('[GitHubAutoCommit] Auto-commit is disabled - skipping force commit');
+      return null;
     }
 
     try {
@@ -75,20 +83,21 @@ export class GitHubAutoCommitService {
    * Regular commit and push to the staging branch
    */
   static async commitAndPush(message: string = 'Auto-commit changes') {
-    if (typeof window === 'undefined') {
-      console.log('[GitHubAutoCommit] Skipping commit - server-side context');
-      return;
+    if (!this.isEnabled()) {
+      console.log('[GitHubAutoCommit] Auto-commit is disabled - skipping commit');
+      return null;
     }
 
-    if (!this.validateState()) {
-      throw new Error('GitHub auto-commit service not properly initialized');
+    if (typeof window === 'undefined') {
+      console.log('[GitHubAutoCommit] Skipping commit - server-side context');
+      return null;
     }
 
     // Debounce commits to prevent too frequent updates
     const now = Date.now();
     if (now - this.lastCommitTime < this.COMMIT_DEBOUNCE) {
       console.log('[GitHubAutoCommit] Skipping commit - too soon since last commit');
-      return;
+      return null;
     }
 
     try {
@@ -114,28 +123,11 @@ export class GitHubAutoCommitService {
       console.log('[GitHubAutoCommit] Commit result:', result);
 
       this.lastCommitTime = now;
-      console.log('[GitHubAutoCommit] Successfully committed and pushed changes to staging');
+      return result;
     } catch (error) {
       console.error('[GitHubAutoCommit] Failed to commit and push changes:', error);
-      throw error;
+      return null;
     }
-  }
-
-  /**
-   * Validate initialization and token
-   */
-  private static validateState(): boolean {
-    if (!this.initialized) {
-      console.error('[GitHubAutoCommit] Service not initialized');
-      return false;
-    }
-
-    if (!this.token) {
-      console.error('[GitHubAutoCommit] No valid GitHub token available');
-      return false;
-    }
-
-    return true;
   }
 
   /**

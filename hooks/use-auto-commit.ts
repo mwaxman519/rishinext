@@ -32,13 +32,22 @@ export function useAutoSave({
   useEffect(() => {
     console.log('[AutoSave] Initializing GitHubAutoCommitService...');
     GitHubAutoCommitService.initialize();
+
+    // Notify user about GitHub sync status
+    if (!GitHubAutoCommitService.isEnabled()) {
+      toast({
+        title: "GitHub Sync Disabled",
+        description: "Changes will be saved locally only. Add a GitHub token to enable sync.",
+      });
+    }
+
     return () => {
       console.log('[AutoSave] Cleaning up GitHubAutoCommitService...');
       GitHubAutoCommitService.stopAutoCommit();
     };
   }, []);
 
-  // Save to localStorage and sync to GitHub
+  // Save to localStorage and sync to GitHub if enabled
   const saveAndSync = useCallback(async () => {
     try {
       console.log('[AutoSave] Attempting to save and sync...');
@@ -56,47 +65,50 @@ export function useAutoSave({
           description: "Your changes have been saved locally",
         });
 
-        // Sync to GitHub if enough time has passed
-        const now = Date.now();
-        if (!lastSyncRef.current || now - parseInt(lastSyncRef.current) >= interval) {
-          console.log('[AutoSave] Starting GitHub sync attempt...');
-          try {
-            await GitHubAutoCommitService.commitAndPush('Auto-save: Update content');
-            lastSyncRef.current = now.toString();
-            retryCountRef.current = 0; // Reset retry count on success
+        // Only attempt GitHub sync if the service is enabled
+        if (GitHubAutoCommitService.isEnabled()) {
+          const now = Date.now();
+          if (!lastSyncRef.current || now - parseInt(lastSyncRef.current) >= interval) {
+            console.log('[AutoSave] Starting GitHub sync attempt...');
+            try {
+              const result = await GitHubAutoCommitService.commitAndPush('Auto-save: Update content');
+              if (result) {
+                lastSyncRef.current = now.toString();
+                retryCountRef.current = 0; // Reset retry count on success
 
-            console.log('[AutoSave] GitHub sync successful');
-            toast({
-              title: "Changes synced",
-              description: "Your changes have been synced to GitHub",
-            });
-          } catch (error) {
-            console.error('[AutoSave] GitHub sync failed:', error);
+                console.log('[AutoSave] GitHub sync successful');
+                toast({
+                  title: "Changes synced",
+                  description: "Your changes have been synced to GitHub",
+                });
+              }
+            } catch (error) {
+              console.error('[AutoSave] GitHub sync failed:', error);
 
-            // Implement retry logic
-            if (retryCountRef.current < maxRetries) {
-              retryCountRef.current++;
-              console.log(`[AutoSave] Retry attempt ${retryCountRef.current}/${maxRetries}`);
+              // Implement retry logic
+              if (retryCountRef.current < maxRetries) {
+                retryCountRef.current++;
+                console.log(`[AutoSave] Retry attempt ${retryCountRef.current}/${maxRetries}`);
 
-              // Exponential backoff for retries
-              const retryDelay = Math.min(1000 * Math.pow(2, retryCountRef.current), 30000);
-              setTimeout(() => saveAndSync(), retryDelay);
+                // Exponential backoff for retries
+                const retryDelay = Math.min(1000 * Math.pow(2, retryCountRef.current), 30000);
+                setTimeout(() => saveAndSync(), retryDelay);
 
-              toast({
-                title: "Sync retry",
-                description: `Retrying to sync changes (Attempt ${retryCountRef.current}/${maxRetries})`,
-              });
-            } else {
-              toast({
-                title: "Sync failed",
-                description: "Failed to sync changes after multiple attempts",
-                variant: "destructive",
-              });
-              throw error;
+                toast({
+                  title: "Sync retry",
+                  description: `Retrying to sync changes (Attempt ${retryCountRef.current}/${maxRetries})`,
+                });
+              } else {
+                toast({
+                  title: "Sync failed",
+                  description: "Failed to sync changes after multiple attempts. Your changes are saved locally.",
+                  variant: "destructive",
+                });
+              }
             }
+          } else {
+            console.log('[AutoSave] Skipping GitHub sync - too soon since last sync');
           }
-        } else {
-          console.log('[AutoSave] Skipping GitHub sync - too soon since last sync');
         }
       } else {
         console.log('[AutoSave] No changes detected, skipping save and sync');
