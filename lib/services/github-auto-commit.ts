@@ -3,7 +3,7 @@
  */
 export class GitHubAutoCommitService {
   private static initialized = false;
-  private static intervalId: NodeJS.Timer | null = null;
+  private static intervalId: NodeJS.Timeout | null = null;
   private static lastCommitTime: number = 0;
   private static readonly COMMIT_DEBOUNCE = 10000; // 10 seconds
   private static token: string | null = null;
@@ -135,7 +135,7 @@ export class GitHubAutoCommitService {
    */
   static stopAutoCommit() {
     if (this.intervalId) {
-      clearInterval(this.intervalId);
+      clearTimeout(this.intervalId);
       this.intervalId = null;
       console.log('[GitHubAutoCommit] Auto-commit stopped');
     }

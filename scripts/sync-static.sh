@@ -9,13 +9,9 @@ echo "Starting static site sync process..."
 mkdir -p content/pages
 mkdir -p content/global
 
-# Sync Tina schema first
-echo "Syncing Tina schema..."
-node scripts/sync-tina-schema.js
-
-# Build the site with TinaCMS
-echo "Building site with TinaCMS..."
-npx tinacms build && npm run build
+# Build the site
+echo "Building site..."
+npm run build
 
 # Create or update the static branch
 echo "Switching to static branch..."
