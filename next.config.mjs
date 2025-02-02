@@ -33,8 +33,17 @@ const nextConfig = {
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   experimental: {
     mdxRs: false,
-    serverComponentsExternalPackages: ['@mdx-js/react', '@mdx-js/runtime']
-  }
+    serverComponentsExternalPackages: ['@mdx-js/react', '@mdx-js/runtime', 'tinacms']
+  },
+  // Add TinaCMS specific configuration
+  async rewrites() {
+    return [
+      {
+        source: '/admin',
+        destination: '/admin/index.html',
+      },
+    ];
+  },
 };
 
 export default withMDX(nextConfig);

@@ -92,6 +92,8 @@ union DocumentNode = Page | Post | Folder
 
 type Page implements Node & Document {
   title: String!
+  description: String
+  date: String
   body: JSON
   id: ID!
   _sys: SystemInfo!
@@ -105,15 +107,28 @@ input StringFilter {
   in: [String]
 }
 
-input RichTextFilter {
-  startsWith: String
+input DatetimeFilter {
+  after: String
+  before: String
   eq: String
   exists: Boolean
+  in: [String]
+}
+
+input PageBodyCallToActionFilter {
+  text: StringFilter
+  url: StringFilter
+}
+
+input PageBodyFilter {
+  CallToAction: PageBodyCallToActionFilter
 }
 
 input PageFilter {
   title: StringFilter
-  body: RichTextFilter
+  description: StringFilter
+  date: DatetimeFilter
+  body: PageBodyFilter
 }
 
 type PageConnectionEdges {
@@ -130,23 +145,23 @@ type PageConnection implements Connection {
 type Post implements Node & Document {
   title: String!
   date: String
+  description: String
   body: JSON
   id: ID!
   _sys: SystemInfo!
   _values: JSON!
 }
 
-input DatetimeFilter {
-  after: String
-  before: String
+input RichTextFilter {
+  startsWith: String
   eq: String
   exists: Boolean
-  in: [String]
 }
 
 input PostFilter {
   title: StringFilter
   date: DatetimeFilter
+  description: StringFilter
   body: RichTextFilter
 }
 
@@ -186,12 +201,15 @@ input DocumentMutation {
 
 input PageMutation {
   title: String
+  description: String
+  date: String
   body: JSON
 }
 
 input PostMutation {
   title: String
   date: String
+  description: String
   body: JSON
 }
 
