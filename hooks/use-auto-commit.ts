@@ -23,7 +23,7 @@ export function useAutoSave({
   onError,
   maxRetries = DEFAULT_MAX_RETRIES,
 }: AutoSaveOptions) {
-  const timerRef = useRef<NodeJS.Timer>();
+  const timerRef = useRef<NodeJS.Timeout>();
   const lastSaveRef = useRef<string>();
   const lastSyncRef = useRef<string>();
   const retryCountRef = useRef<number>(0);
@@ -128,7 +128,7 @@ export function useAutoSave({
   // Start auto-save timer
   const startAutoSave = useCallback(() => {
     if (timerRef.current) {
-      clearInterval(timerRef.current);
+      clearTimeout(timerRef.current);
     }
 
     if (enabled) {
@@ -139,7 +139,7 @@ export function useAutoSave({
       // Set up interval
       timerRef.current = setInterval(() => {
         saveAndSync();
-      }, interval);
+      }, interval) as unknown as NodeJS.Timeout;
     }
   }, [enabled, interval, saveAndSync]);
 
@@ -150,7 +150,7 @@ export function useAutoSave({
     return () => {
       if (timerRef.current) {
         console.log('[AutoSave] Cleaning up auto-save timer...');
-        clearInterval(timerRef.current);
+        clearTimeout(timerRef.current);
       }
     };
   }, [startAutoSave]);
@@ -172,7 +172,7 @@ export function useAutoSave({
     startAutoSave,
     stopAutoSave: useCallback(() => {
       if (timerRef.current) {
-        clearInterval(timerRef.current);
+        clearTimeout(timerRef.current);
         timerRef.current = undefined;
       }
     }, []),

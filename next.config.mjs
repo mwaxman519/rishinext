@@ -1,5 +1,4 @@
 import createMDX from '@next/mdx';
-import rehypePrettyCode from 'rehype-pretty-code';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
@@ -14,21 +13,7 @@ const withMDX = createMDX({
         properties: {
           className: ['anchor']
         }
-      }],
-      [rehypePrettyCode, {
-        theme: 'github-dark',
-        onVisitLine(node) {
-          if (node.children.length === 0) {
-            node.children = [{ type: 'text', value: ' ' }];
-          }
-        },
-        onVisitHighlightedLine(node) {
-          node.properties.className.push('line--highlighted');
-        },
-        onVisitHighlightedWord(node) {
-          node.properties.className = ['word--highlighted'];
-        }
-      }],
+      }]
     ],
   },
 });
@@ -41,10 +26,7 @@ const nextConfig = {
     unoptimized: true,
   },
   reactStrictMode: true,
-  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
-  experimental: {
-    mdxRs: true,
-  }
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx']
 };
 
 export default withMDX(nextConfig);

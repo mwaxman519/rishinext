@@ -9,7 +9,6 @@ export const revalidate = false;
 
 interface PageProps {
   params: { slug: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 // Generate all possible paths at build time

@@ -1,6 +1,10 @@
 import type { MDXComponents } from 'mdx/types';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import type { ImageProps as NextImageProps } from 'next/image';
+import type { DetailedHTMLProps, ImgHTMLAttributes } from 'react';
+
+type ImageProps = DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
 
 const components: MDXComponents = {
   h1: ({ children }) => (
@@ -61,25 +65,34 @@ const components: MDXComponents = {
       {children}
     </a>
   ),
-  img: ({ src, alt, ...props }) => (
-    <figure className="my-8">
-      <div className="overflow-hidden rounded-lg border border-border">
-        <Image
-          src={src || ''}
-          alt={alt || ''}
-          width={800}
-          height={400}
-          className="w-full h-auto"
-          {...props}
-        />
-      </div>
-      {alt && (
-        <figcaption className="mt-2 text-center text-sm text-muted-foreground">
-          {alt}
-        </figcaption>
-      )}
-    </figure>
-  ),
+  img: (props: ImageProps) => {
+    if (!props.src) {
+      return null;
+    }
+
+    // Handle both relative and absolute URLs
+    const src = props.src.startsWith('http') ? props.src : props.src;
+    const imgProps: NextImageProps = {
+      src,
+      alt: props.alt || 'Article image', // Ensure alt text is always present
+      width: 800,
+      height: 400,
+      className: cn("w-full h-auto", props.className)
+    };
+
+    return (
+      <figure className="my-8">
+        <div className="overflow-hidden rounded-lg border border-border">
+          <Image {...imgProps} />
+        </div>
+        {props.alt && (
+          <figcaption className="mt-2 text-center text-sm text-muted-foreground">
+            {props.alt}
+          </figcaption>
+        )}
+      </figure>
+    );
+  },
   table: ({ children }) => (
     <div className="my-6 w-full overflow-y-auto">
       <table className="w-full border-collapse text-sm">
