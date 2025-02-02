@@ -39,22 +39,12 @@ const nextConfig = {
   distDir: 'out',
   images: {
     unoptimized: true,
-    loader: 'custom',
-    loaderFile: './image-loader.js',
   },
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   experimental: {
     mdxRs: true,
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/admin',
-        destination: '/admin/index.html',
-      },
-    ];
-  },
+  }
 };
 
 export default withMDX(nextConfig);

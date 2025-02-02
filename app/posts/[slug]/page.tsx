@@ -7,6 +7,11 @@ import { notFound } from 'next/navigation';
 export const dynamic = 'force-static';
 export const revalidate = false;
 
+interface PageProps {
+  params: { slug: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
 // Generate all possible paths at build time
 export async function generateStaticParams() {
   const slugs = await getAllSlugs();
@@ -29,7 +34,7 @@ async function getData(slug: string) {
   }
 }
 
-export default async function Post({ params }: { params: { slug: string } }) {
+export default async function Post({ params }: PageProps) {
   const data = await getData(params.slug);
 
   if (!data) {

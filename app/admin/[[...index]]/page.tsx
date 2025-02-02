@@ -1,7 +1,12 @@
 "use client";
 
-import { TinaCMS } from "tinacms";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+
+// Dynamically import TinaCMS to prevent SSR issues
+const TinaCMS = dynamic(() => import("tinacms").then((mod) => mod.TinaCMS), {
+  ssr: false,
+});
 
 export default function AdminPage() {
   const [isProduction, setIsProduction] = useState(false);
@@ -23,11 +28,13 @@ export default function AdminPage() {
   }
 
   return (
-    <TinaCMS>
-      <div className="p-4">
-        <h1>Content Management</h1>
-        <p>Use this interface to manage your content.</p>
-      </div>
-    </TinaCMS>
+    <div>
+      <TinaCMS>
+        <div className="p-4">
+          <h1>Content Management</h1>
+          <p>Use this interface to manage your content.</p>
+        </div>
+      </TinaCMS>
+    </div>
   );
 }

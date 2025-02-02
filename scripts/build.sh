@@ -12,9 +12,9 @@ log "Starting static build process..."
 log "Cleaning up previous builds..."
 rm -rf .next out
 
-# Build the static site using Next.js built-in static export
+# Build and export the static site using Next.js default behavior
 log "Building static site..."
-if ! NEXT_TELEMETRY_DISABLED=1 NODE_ENV=production next build && next export; then
+if ! NODE_ENV=production npm run build; then
     log "Error: Static build failed"
     exit 1
 fi
