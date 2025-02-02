@@ -103,16 +103,19 @@ input StringFilter {
   in: [String]
 }
 
-input RichTextFilter {
-  startsWith: String
-  eq: String
-  exists: Boolean
+input PageBodyCalloutFilter {
+  type: StringFilter
+  text: StringFilter
+}
+
+input PageBodyFilter {
+  callout: PageBodyCalloutFilter
 }
 
 input PageFilter {
   title: StringFilter
   description: StringFilter
-  body: RichTextFilter
+  body: PageBodyFilter
 }
 
 type PageConnectionEdges {

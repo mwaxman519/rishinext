@@ -1,4 +1,17 @@
 import { defineConfig } from "tinacms";
+import type { Template } from "tinacms";
+
+// Define the Callout template type
+interface CalloutTemplate extends Template {
+  name: "callout";
+  label: "Callout";
+  fields: {
+    name: "type" | "text";
+    type: "string";
+    label: string;
+    options?: string[];
+  }[];
+}
 
 export default defineConfig({
   branch: "static",
@@ -59,7 +72,7 @@ export default defineConfig({
                     type: "string",
                   },
                 ],
-              },
+              } as CalloutTemplate,
             ],
           }
         ],

@@ -1,45 +1,38 @@
 ---
 title: Test MDX Page
-description: A test page to verify MDX implementation
+description: A test page to verify MDX implementation and demonstrate TinaCMS schema capabilities
 date: 2025-02-02
 ---
 
-# Welcome to our Test Page
+# Test Page with TinaCMS Components
 
-This is a test page to verify our MDX implementation. Let's test various MDX features:
+This page demonstrates our TinaCMS schema capabilities with various components and MDX features:
 
-## Text Formatting
+<callout type="info" text="This page showcases different callout types and MDX features!" />
+
+## Rich Text Features
 
 Here's some **bold text** and *italic text*.
 
-## Lists
+## Component Examples
 
-Unordered list:
-- Item 1
-- Item 2
-- Item 3
+Let's test our callout component with different types:
 
-Ordered list:
-1. First item
-2. Second item
-3. Third item
+<callout type="warning" text="Be careful when editing content directly!" />
 
-## Code Block
+<callout type="success" text="The schema configuration is working properly!" />
+
+<callout type="error" text="This demonstrates an error callout style" />
+
+## Code Examples
 
 ```typescript
-function hello() {
-  console.log('Hello from MDX!');
+// Example of TypeScript code
+function createCallout(type: 'info' | 'warning' | 'success' | 'error', text: string) {
+  return <callout type={type} text={text} />;
 }
 ```
 
-## Image Test
+## Next Steps
 
-![Test Image](/placeholder-image.jpg)
-
-## Heading Links
-
-Notice how the headings above should have automatic anchor links thanks to rehype-autolink-headings.
-
-## Component Test
-
-This page demonstrates various MDX features and components working together.
+<callout type="info" text="Try editing this page using the TinaCMS interface to see how the schema works in practice." />
