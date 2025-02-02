@@ -1,7 +1,7 @@
 import { defineConfig } from "tinacms";
 
-// Get environment variables
-const branch = "static"; // Point to static branch for live editing
+// Point to static branch for live editing
+const branch = "static";
 const clientId = process.env.NEXT_PUBLIC_TINA_CLIENT_ID;
 const token = process.env.TINA_TOKEN;
 
@@ -25,6 +25,37 @@ export default defineConfig({
   },
   schema: {
     collections: [
+      {
+        name: "post",
+        label: "Posts",
+        path: "content/posts",
+        format: "mdx",
+        fields: [
+          {
+            type: "string",
+            name: "title",
+            label: "Title",
+            isTitle: true,
+            required: true,
+          },
+          {
+            type: "string",
+            name: "description",
+            label: "Description",
+          },
+          {
+            type: "datetime",
+            name: "date",
+            label: "Date",
+          },
+          {
+            type: "rich-text",
+            name: "body",
+            label: "Body",
+            isBody: true,
+          },
+        ],
+      },
       {
         name: "page",
         label: "Pages",
@@ -62,11 +93,6 @@ export default defineConfig({
             type: "string",
             name: "tagline",
             label: "Tagline",
-          },
-          {
-            type: "image",
-            name: "logo",
-            label: "Logo",
           },
         ],
       },

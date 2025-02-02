@@ -8,7 +8,7 @@ async function syncTinaSchema() {
     // Get required environment variables
     const clientId = process.env.NEXT_PUBLIC_TINA_CLIENT_ID;
     const token = process.env.TINA_TOKEN;
-    const branch = process.env.HEAD || process.env.VERCEL_GIT_COMMIT_REF || "main";
+    const branch = "static";  // Always sync to static branch
 
     if (!clientId || !token) {
       throw new Error('Missing required Tina environment variables');
@@ -39,20 +39,11 @@ async function syncTinaSchema() {
       })
     });
 
-    const responseText = await response.text();
-    let result;
-    try {
-      result = JSON.parse(responseText);
-    } catch (e) {
-      console.error('Raw response:', responseText);
-      throw new Error(`Invalid JSON response: ${responseText}`);
-    }
-
     if (!response.ok) {
-      throw new Error(`Failed to update schema: ${result.message || response.statusText}`);
+      const text = await response.text();
+      throw new Error(`Failed to update schema: ${text}`);
     }
 
-    console.log('Schema sync result:', result);
     console.log('Schema sync complete');
     console.log('You can now run `npx tinacms build`');
 
