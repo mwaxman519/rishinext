@@ -1,4 +1,4 @@
-// tina/config.ts
+// tina/config.tsx
 import { defineConfig } from "tinacms";
 var config_default = defineConfig({
   branch: "static",
