@@ -10,8 +10,8 @@ export type StaticData = {
   date?: string;
 };
 
-const POSTS_DIRECTORY = path.join(process.cwd(), 'content', 'posts');
-const PAGES_DIRECTORY = path.join(process.cwd(), 'content', 'pages');
+const POSTS_DIRECTORY = path.join(process.cwd(), 'static', 'content', 'posts');
+const PAGES_DIRECTORY = path.join(process.cwd(), 'static', 'content', 'pages');
 
 /**
  * Get data from MDX files in a specific directory

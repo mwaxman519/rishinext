@@ -3,10 +3,10 @@
 import { cn } from "@/lib/utils";
 
 interface MDXContentProps {
-  compiledContent: React.ReactNode;
+  children: React.ReactNode;
 }
 
-export function MDXContent({ compiledContent }: MDXContentProps) {
+export function MDXContent({ children }: MDXContentProps) {
   return (
     <article className={cn(
       "prose dark:prose-invert max-w-none",
@@ -31,7 +31,7 @@ export function MDXContent({ compiledContent }: MDXContentProps) {
       // Images
       "prose-img:rounded-lg prose-img:border prose-img:border-border"
     )}>
-      {compiledContent}
+      {children}
     </article>
   );
 }

@@ -45,11 +45,14 @@ export default async function Post({ params }: PageProps) {
             </time>
           )}
         </header>
-        <Suspense fallback={<div className="animate-pulse space-y-4">
-          <div className="h-4 bg-muted rounded w-3/4" />
-          <div className="h-4 bg-muted rounded w-full" />
-          <div className="h-4 bg-muted rounded w-5/6" />
-        </div>}>
+        <Suspense fallback={
+          <div className="animate-pulse space-y-4">
+            <div className="h-4 bg-muted rounded w-3/4" />
+            <div className="h-4 bg-muted rounded w-full" />
+            <div className="h-4 bg-muted rounded w-5/6" />
+          </div>
+        }>
+          {/* @ts-expect-error - Async Server Component */}
           <MDXServer source={post.content} />
         </Suspense>
       </article>
