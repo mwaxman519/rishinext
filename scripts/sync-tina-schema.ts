@@ -1,4 +1,5 @@
 import { createClient } from "tinacms/dist/client";
+import { queries } from "../tina/__generated__/types";
 import { join } from 'path';
 
 async function syncTinaSchema() {
