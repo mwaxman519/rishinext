@@ -10,8 +10,10 @@ export type StaticData = {
   date?: string;
 };
 
-const POSTS_DIRECTORY = path.join(process.cwd(), 'static', 'content', 'posts');
-const PAGES_DIRECTORY = path.join(process.cwd(), 'static', 'content', 'pages');
+// Ensure content directory exists
+const CONTENT_DIRECTORY = path.join(process.cwd(), 'content');
+const POSTS_DIRECTORY = path.join(CONTENT_DIRECTORY, 'posts');
+const PAGES_DIRECTORY = path.join(CONTENT_DIRECTORY, 'pages');
 
 /**
  * Get data from MDX files in a specific directory
@@ -32,11 +34,8 @@ async function getMDXData(directory: string): Promise<StaticData[]> {
         const fileContents = fs.readFileSync(filePath, 'utf8');
         const { data, content } = matter(fileContents);
 
-        // Extract slug from filename (remove .mdx extension)
-        const slug = filename.replace(/\.mdx$/, '');
-
         return {
-          slug,
+          slug: filename.replace(/\.mdx$/, ''),
           title: data.title || 'Untitled',
           description: data.description || '',
           content,
@@ -44,7 +43,6 @@ async function getMDXData(directory: string): Promise<StaticData[]> {
         };
       })
       .sort((a, b) => {
-        // Sort by date if available, newest first
         if (a.date && b.date) {
           return new Date(b.date).getTime() - new Date(a.date).getTime();
         }
@@ -73,7 +71,7 @@ export async function getAllPages(): Promise<StaticData[]> {
 }
 
 /**
- * Get a single item by slug from either posts or pages
+ * Get a single item by slug
  */
 export async function getStaticDataBySlug(slug: string, type: 'post' | 'page' = 'post'): Promise<StaticData | null> {
   try {
