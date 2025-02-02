@@ -10,7 +10,10 @@ interface MDXContentProps {
 export function MDXContent({ children }: MDXContentProps) {
   // Log when content is rendered
   useEffect(() => {
-    console.log('MDX Content mounted with children:', !!children);
+    console.log('[MDX Content] Component mounted:', {
+      hasChildren: !!children,
+      type: typeof children
+    });
   }, [children]);
 
   if (!children) {
@@ -31,7 +34,11 @@ export function MDXContent({ children }: MDXContentProps) {
       "prose-a:text-primary prose-a:no-underline hover:prose-a:underline",
       "prose-code:rounded-md prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5",
       "prose-pre:bg-black prose-pre:rounded-lg prose-pre:p-4",
-      "prose-img:rounded-lg prose-img:border prose-img:border-border"
+      "prose-img:rounded-lg prose-img:border prose-img:border-border",
+      // Add support for GitHub-flavored markdown
+      "prose-table:border prose-table:border-border",
+      "prose-th:border prose-th:border-border prose-th:p-2",
+      "prose-td:border prose-td:border-border prose-td:p-2"
     )}>
       {children}
     </article>

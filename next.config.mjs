@@ -1,11 +1,12 @@
 import createMDX from '@next/mdx';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import remarkGfm from 'remark-gfm';
 
 const withMDX = createMDX({
   extension: /\.mdx?$/,
   options: {
-    remarkPlugins: [],
+    remarkPlugins: [remarkGfm],
     rehypePlugins: [
       rehypeSlug,
       [rehypeAutolinkHeadings, { 
@@ -21,16 +22,18 @@ const withMDX = createMDX({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-  distDir: 'static/out',
+  ...(process.env.NODE_ENV === 'production' ? {
+    output: 'export',
+    distDir: 'static/out',
+  } : {}),
   images: {
     unoptimized: true,
   },
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   experimental: {
-    mdxRs: true,
-    serverComponentsExternalPackages: ['@mdx-js/react']
+    mdxRs: false,
+    serverComponentsExternalPackages: ['@mdx-js/react', '@mdx-js/runtime']
   }
 };
 

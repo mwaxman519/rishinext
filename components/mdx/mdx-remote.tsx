@@ -21,13 +21,16 @@ export async function MDXRemote({ source }: MDXRemoteProps) {
   }
 
   try {
+    console.log('Attempting to render MDX content...');
     return (
       <div className="mdx-content prose dark:prose-invert max-w-none">
         <NextMDXRemote
           source={source}
           components={components}
           options={{
+            parseFrontmatter: true,
             mdxOptions: {
+              development: process.env.NODE_ENV === 'development',
               rehypePlugins: [
                 rehypeSlug,
                 [rehypeAutolinkHeadings, { 
@@ -37,7 +40,8 @@ export async function MDXRemote({ source }: MDXRemoteProps) {
                   }
                 }]
               ],
-              format: 'mdx'
+              format: 'mdx',
+              useDynamicImport: true
             }
           }}
         />
@@ -51,6 +55,9 @@ export async function MDXRemote({ source }: MDXRemoteProps) {
         <p className="text-sm text-muted-foreground">
           {error instanceof Error ? error.message : 'An unknown error occurred while rendering content'}
         </p>
+        <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-auto">
+          {error instanceof Error ? error.stack : 'No stack trace available'}
+        </pre>
       </div>
     );
   }

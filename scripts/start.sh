@@ -23,9 +23,11 @@ log "Cleaning cache directories..."
 rm -rf .next node_modules/.cache
 
 # Ensure content directories exist
-log "Checking content directories..."
+log "Creating content directories..."
 mkdir -p content/pages
+mkdir -p content/posts
 mkdir -p static/content/pages
+mkdir -p static/content/posts
 
 # Wait for port 3000 to be available
 while lsof -i :3000 >/dev/null 2>&1; do

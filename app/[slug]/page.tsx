@@ -13,13 +13,13 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const { slug } = params;
-  console.log(`Attempting to render page for slug: ${slug}`);
+  console.log(`[MDX Page] Attempting to render page for slug: ${slug}`);
 
   try {
     // Try both content paths
     const contentPaths = [
-      path.join(process.cwd(), 'content', 'pages', `${slug}.mdx`),
-      path.join(process.cwd(), 'static', 'content', 'pages', `${slug}.mdx`)
+      path.join(process.cwd(), 'static', 'content', 'pages', `${slug}.mdx`),
+      path.join(process.cwd(), 'content', 'pages', `${slug}.mdx`)
     ];
 
     let source: string | null = null;
@@ -29,21 +29,33 @@ export default async function Page({ params }: PageProps) {
       try {
         source = await fs.readFile(contentPath, 'utf-8');
         usedPath = contentPath;
-        console.log(`Successfully loaded content from: ${contentPath}`);
+        console.log(`[MDX Page] Successfully loaded content from: ${contentPath}`);
         break;
       } catch (error) {
-        console.log(`Could not load content from: ${contentPath}`, error);
+        console.log(`[MDX Page] Could not load content from: ${contentPath}`, error);
         continue;
       }
     }
 
     if (!source) {
-      console.error(`No MDX file found for slug: ${slug}`);
+      console.error(`[MDX Page] No MDX file found for slug: ${slug}`);
       return notFound();
     }
 
     const { content, data } = matter(source);
-    console.log(`Parsed frontmatter data:`, data);
+    console.log(`[MDX Page] Parsed frontmatter data for ${slug}:`, data);
+
+    if (!content.trim()) {
+      console.error(`[MDX Page] Empty content for slug: ${slug}`);
+      return (
+        <div className="container mx-auto py-10">
+          <div className="prose dark:prose-invert max-w-none">
+            <h1>Error: Empty Content</h1>
+            <p>The requested page has no content.</p>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className="container mx-auto py-10">
@@ -59,15 +71,15 @@ export default async function Page({ params }: PageProps) {
       </div>
     );
   } catch (error) {
-    console.error(`Failed to load MDX content for slug: ${slug}`, error);
-    return notFound();
+    console.error(`[MDX Page] Failed to load MDX content for slug: ${slug}`, error);
+    throw error; // Let Next.js error boundary handle it
   }
 }
 
 export async function generateStaticParams() {
   const contentPaths = [
-    path.join(process.cwd(), 'content', 'pages'),
-    path.join(process.cwd(), 'static', 'content', 'pages')
+    path.join(process.cwd(), 'static', 'content', 'pages'),
+    path.join(process.cwd(), 'content', 'pages')
   ];
 
   try {
@@ -79,9 +91,9 @@ export async function generateStaticParams() {
         files
           .filter(file => file.endsWith('.mdx'))
           .forEach(file => allFiles.add(file));
-        console.log(`Found MDX files in ${contentPath}:`, files);
+        console.log(`[MDX Page] Found MDX files in ${contentPath}:`, files);
       } catch (error) {
-        console.warn(`Warning: Could not read directory ${contentPath}`, error);
+        console.warn(`[MDX Page] Warning: Could not read directory ${contentPath}`, error);
         continue;
       }
     }
@@ -90,10 +102,10 @@ export async function generateStaticParams() {
       slug: file.replace(/\.mdx$/, '')
     }));
 
-    console.log('Generated static params:', params);
+    console.log('[MDX Page] Generated static params:', params);
     return params;
   } catch (error) {
-    console.error('Failed to generate static params:', error);
+    console.error('[MDX Page] Failed to generate static params:', error);
     return [];
   }
 }
