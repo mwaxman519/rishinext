@@ -8,6 +8,12 @@ var config_default = defineConfig({
     outputFolder: "admin",
     publicFolder: "public"
   },
+  media: {
+    tina: {
+      mediaRoot: "uploads",
+      publicFolder: "public"
+    }
+  },
   schema: {
     collections: [
       {
@@ -22,61 +28,6 @@ var config_default = defineConfig({
             label: "Title",
             isTitle: true,
             required: true
-          },
-          {
-            type: "string",
-            name: "description",
-            label: "Description"
-          },
-          {
-            type: "datetime",
-            name: "date",
-            label: "Date"
-          },
-          {
-            type: "rich-text",
-            name: "body",
-            label: "Body",
-            isBody: true,
-            templates: [
-              {
-                name: "CallToAction",
-                label: "Call to Action",
-                fields: [
-                  {
-                    name: "text",
-                    label: "Text",
-                    type: "string",
-                    required: true
-                  },
-                  {
-                    name: "url",
-                    label: "URL",
-                    type: "string"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        name: "post",
-        label: "Blog Posts",
-        path: "content/posts",
-        format: "mdx",
-        fields: [
-          {
-            type: "string",
-            name: "title",
-            label: "Title",
-            isTitle: true,
-            required: true
-          },
-          {
-            type: "datetime",
-            name: "date",
-            label: "Date"
           },
           {
             type: "string",

@@ -4,6 +4,16 @@ export default defineConfig({
   branch: "static",
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID,
   token: process.env.TINA_TOKEN,
+  build: {
+    outputFolder: "admin",
+    publicFolder: "public",
+  },
+  media: {
+    tina: {
+      mediaRoot: "uploads",
+      publicFolder: "public",
+    },
+  },
   schema: {
     collections: [
       {

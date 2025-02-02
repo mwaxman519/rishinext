@@ -56,13 +56,10 @@ type Query {
   document(collection: String, relativePath: String): DocumentNode!
   page(relativePath: String): Page!
   pageConnection(before: String, after: String, first: Float, last: Float, sort: String, filter: PageFilter): PageConnection!
-  post(relativePath: String): Post!
-  postConnection(before: String, after: String, first: Float, last: Float, sort: String, filter: PostFilter): PostConnection!
 }
 
 input DocumentFilter {
   page: PageFilter
-  post: PostFilter
 }
 
 type DocumentConnectionEdges {
@@ -88,12 +85,11 @@ type Collection {
   documents(before: String, after: String, first: Float, last: Float, sort: String, filter: DocumentFilter, folder: String): DocumentConnection!
 }
 
-union DocumentNode = Page | Post | Folder
+union DocumentNode = Page | Folder
 
 type Page implements Node & Document {
   title: String!
   description: String
-  date: String
   body: JSON
   id: ID!
   _sys: SystemInfo!
@@ -107,28 +103,16 @@ input StringFilter {
   in: [String]
 }
 
-input DatetimeFilter {
-  after: String
-  before: String
+input RichTextFilter {
+  startsWith: String
   eq: String
   exists: Boolean
-  in: [String]
-}
-
-input PageBodyCallToActionFilter {
-  text: StringFilter
-  url: StringFilter
-}
-
-input PageBodyFilter {
-  CallToAction: PageBodyCallToActionFilter
 }
 
 input PageFilter {
   title: StringFilter
   description: StringFilter
-  date: DatetimeFilter
-  body: PageBodyFilter
+  body: RichTextFilter
 }
 
 type PageConnectionEdges {
@@ -142,40 +126,6 @@ type PageConnection implements Connection {
   edges: [PageConnectionEdges]
 }
 
-type Post implements Node & Document {
-  title: String!
-  date: String
-  description: String
-  body: JSON
-  id: ID!
-  _sys: SystemInfo!
-  _values: JSON!
-}
-
-input RichTextFilter {
-  startsWith: String
-  eq: String
-  exists: Boolean
-}
-
-input PostFilter {
-  title: StringFilter
-  date: DatetimeFilter
-  description: StringFilter
-  body: RichTextFilter
-}
-
-type PostConnectionEdges {
-  cursor: String!
-  node: Post
-}
-
-type PostConnection implements Connection {
-  pageInfo: PageInfo!
-  totalCount: Float!
-  edges: [PostConnectionEdges]
-}
-
 type Mutation {
   addPendingDocument(collection: String!, relativePath: String!, template: String): DocumentNode!
   updateDocument(collection: String, relativePath: String!, params: DocumentUpdateMutation!): DocumentNode!
@@ -184,31 +134,19 @@ type Mutation {
   createFolder(collection: String, relativePath: String!): DocumentNode!
   updatePage(relativePath: String!, params: PageMutation!): Page!
   createPage(relativePath: String!, params: PageMutation!): Page!
-  updatePost(relativePath: String!, params: PostMutation!): Post!
-  createPost(relativePath: String!, params: PostMutation!): Post!
 }
 
 input DocumentUpdateMutation {
   page: PageMutation
-  post: PostMutation
   relativePath: String
 }
 
 input DocumentMutation {
   page: PageMutation
-  post: PostMutation
 }
 
 input PageMutation {
   title: String
-  description: String
-  date: String
-  body: JSON
-}
-
-input PostMutation {
-  title: String
-  date: String
   description: String
   body: JSON
 }
