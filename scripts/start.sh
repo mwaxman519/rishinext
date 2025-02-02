@@ -39,7 +39,8 @@ done
 export NODE_ENV=development
 export NEXT_TELEMETRY_DISABLED=1
 export NEXT_DEBUG_MDX=true # Enable MDX debug logging
+export DEBUG=next:* # Enable all Next.js debug logging
 
 # Start Next.js server and wait for health check
 log "Starting Next.js server..."
-exec next dev --hostname 0.0.0.0 --port 3000
+exec next dev --hostname 0.0.0.0 --port 3000 --turbo
