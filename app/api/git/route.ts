@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { exec } from 'child_process';
 import { z } from 'zod';
-import path from 'path';
 
 // Input validation schema
 const commitRequestSchema = z.object({
@@ -12,7 +11,7 @@ const commitRequestSchema = z.object({
 type CommitRequest = z.infer<typeof commitRequestSchema>;
 
 // Enhanced error handling for command execution
-async function execCommand(command: string): Promise<string> {
+async function execCommand(command: string, token?: string): Promise<string> {
   console.log(`Executing command: ${command}`);
 
   return new Promise((resolve, reject) => {
@@ -22,6 +21,7 @@ async function execCommand(command: string): Promise<string> {
       env: {
         ...process.env,
         GIT_TERMINAL_PROMPT: '0', // Disable git interactive prompts
+        ...(token && { GIT_TOKEN: token }), // Pass token if provided
       },
       cwd: process.cwd(), // Ensure we're in the correct directory
     }, (error, stdout, stderr) => {
@@ -71,7 +71,21 @@ export async function POST(request: NextRequest) {
   console.log('POST /api/git - Commit request started');
 
   try {
-    // Parse request body using the NextRequest API
+    // Get authorization token
+    const authHeader = request.headers.get('authorization');
+    const token = authHeader?.replace('Bearer ', '');
+
+    if (!token) {
+      return NextResponse.json(
+        { 
+          status: 'error',
+          message: 'No authorization token provided'
+        },
+        { status: 401 }
+      );
+    }
+
+    // Parse request body
     const body: CommitRequest = await request.json();
     const result = commitRequestSchema.safeParse(body);
 
@@ -94,17 +108,21 @@ export async function POST(request: NextRequest) {
 
     // Initialize git if needed
     try {
-      await execCommand('git init');
+      await execCommand('git init', token);
       console.log('Git repository initialized');
     } catch (error) {
       console.log('Git repository already initialized');
     }
 
-    // Configure git
+    // Configure git with token
     try {
-      await execCommand('git config --local init.defaultBranch main');
-      await execCommand('git config --local user.name "Replit User"');
-      await execCommand('git config --local user.email "user@repl.it"');
+      await execCommand('git config --local init.defaultBranch main', token);
+      await execCommand('git config --local user.name "Replit User"', token);
+      await execCommand('git config --local user.email "user@repl.it"', token);
+
+      // Set up the token for authentication
+      await execCommand(`git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ${Buffer.from(`x-access-token:${token}`).toString('base64')}"`, token);
+
       console.log('Git configuration completed');
     } catch (error) {
       console.error('Git configuration failed:', error);
@@ -119,7 +137,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check for changes
-    const status = await execCommand('git status --porcelain');
+    const status = await execCommand('git status --porcelain', token);
     console.log('Git status:', status || 'No changes');
 
     if (!status) {
@@ -132,18 +150,18 @@ export async function POST(request: NextRequest) {
 
     // Add and commit changes
     try {
-      await execCommand('git add .');
-      await execCommand(`git commit -m "${commitMessage}"`);
+      await execCommand('git add .', token);
+      await execCommand(`git commit -m "${commitMessage}"`, token);
       console.log('Changes committed');
 
       // Try to push to staging branch
       try {
-        await execCommand('git push origin staging');
+        await execCommand('git push origin staging', token);
         console.log('Pushed to existing staging branch');
       } catch (pushError) {
         console.log('Creating staging branch...');
-        await execCommand('git checkout -b staging');
-        await execCommand('git push -u origin staging');
+        await execCommand('git checkout -b staging', token);
+        await execCommand('git push -u origin staging', token);
         console.log('Created and pushed new staging branch');
       }
     } catch (error) {

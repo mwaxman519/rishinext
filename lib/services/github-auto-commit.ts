@@ -6,47 +6,79 @@ export class GitHubAutoCommitService {
   private static intervalId: NodeJS.Timer | null = null;
   private static lastCommitTime: number = 0;
   private static readonly COMMIT_DEBOUNCE = 10000; // 10 seconds
+  private static token: string | null = null;
 
   /**
    * Initialize the GitHub service
    */
   static initialize() {
-    if (typeof window === 'undefined') return; // Only run on client-side
-    if (this.initialized) return;
-
-    if (!process.env.GITHUB_TOKEN) {
-      console.error('GITHUB_TOKEN not found');
+    if (typeof window === 'undefined') {
+      console.log('[GitHubAutoCommit] Skipping initialization - server-side context');
       return;
     }
 
+    if (this.initialized) {
+      console.log('[GitHubAutoCommit] Service already initialized');
+      return;
+    }
+
+    // Check for either GITHUB_TOKEN or NEXT_PUBLIC_GITHUB_TOKEN
+    const token = process.env.GITHUB_TOKEN || process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+    if (!token) {
+      console.error('[GitHubAutoCommit] GitHub token not found in environment variables');
+      return;
+    }
+
+    this.token = token;
     this.initialized = true;
     this.lastCommitTime = Date.now();
-    console.log('GitHub auto-commit service initialized');
+    console.log('[GitHubAutoCommit] Service initialized with token');
+  }
+
+  /**
+   * Validate initialization and token
+   */
+  private static validateState(): boolean {
+    if (!this.initialized) {
+      console.error('[GitHubAutoCommit] Service not initialized');
+      return false;
+    }
+
+    if (!this.token) {
+      console.error('[GitHubAutoCommit] No valid GitHub token available');
+      return false;
+    }
+
+    return true;
   }
 
   /**
    * Commit and push changes to the staging branch
    */
   static async commitAndPush(message: string = 'Auto-commit changes') {
-    if (typeof window === 'undefined') return; // Only run on client-side
-    if (!this.initialized) {
-      console.error('GitHub service not initialized');
+    if (typeof window === 'undefined') {
+      console.log('[GitHubAutoCommit] Skipping commit - server-side context');
       return;
+    }
+
+    if (!this.validateState()) {
+      throw new Error('GitHub auto-commit service not properly initialized');
     }
 
     // Debounce commits to prevent too frequent updates
     const now = Date.now();
     if (now - this.lastCommitTime < this.COMMIT_DEBOUNCE) {
-      console.log('Skipping commit - too soon since last commit');
+      console.log('[GitHubAutoCommit] Skipping commit - too soon since last commit');
       return;
     }
 
     try {
+      console.log('[GitHubAutoCommit] Initiating commit process');
       const response = await fetch('/api/git', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
+          'Authorization': `Bearer ${this.token}`,
         },
         body: JSON.stringify({ 
           message,
@@ -55,14 +87,18 @@ export class GitHubAutoCommitService {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to commit changes: ${response.statusText}`);
+        const errorData = await response.json();
+        throw new Error(`Failed to commit changes: ${errorData.message || response.statusText}`);
       }
 
+      const result = await response.json();
+      console.log('[GitHubAutoCommit] Commit result:', result);
+
       this.lastCommitTime = now;
-      console.log('Successfully committed and pushed changes to staging');
+      console.log('[GitHubAutoCommit] Successfully committed and pushed changes to staging');
     } catch (error) {
-      console.error('Failed to commit and push changes:', error);
-      throw error; // Propagate error to hook for proper error handling
+      console.error('[GitHubAutoCommit] Failed to commit and push changes:', error);
+      throw error;
     }
   }
 
@@ -73,7 +109,7 @@ export class GitHubAutoCommitService {
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
-      console.log('Auto-commit stopped');
+      console.log('[GitHubAutoCommit] Auto-commit stopped');
     }
   }
 }

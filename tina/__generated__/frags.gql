@@ -6,6 +6,23 @@ fragment PostParts on Post {
   body
 }
 
+fragment PageParts on Page {
+  __typename
+  title
+  blocks {
+    __typename
+    ... on PageBlocksHero {
+      heading
+      subheading
+      actions {
+        __typename
+        label
+        url
+      }
+    }
+  }
+}
+
 fragment GlobalParts on Global {
   __typename
   siteTitle

@@ -1,4 +1,5 @@
 import { defineConfig } from "tinacms";
+import type { TinaConfiguration } from "tinacms";
 
 // Get environment variables
 const branch = process.env.HEAD || process.env.VERCEL_GIT_COMMIT_REF || "main";
@@ -9,7 +10,7 @@ if (!clientId || !token) {
   throw new Error("Missing required environment variables for Tina CMS");
 }
 
-export default defineConfig({
+const config: TinaConfiguration = {
   branch,
   clientId,
   token,
@@ -57,6 +58,63 @@ export default defineConfig({
         ],
       },
       {
+        name: "page",
+        label: "Pages",
+        path: "content/pages",
+        format: "mdx",
+        fields: [
+          {
+            type: "string",
+            name: "title",
+            label: "Title",
+            isTitle: true,
+            required: true,
+          },
+          {
+            type: "object",
+            name: "blocks",
+            label: "Content Blocks",
+            list: true,
+            templates: [
+              {
+                name: "hero",
+                label: "Hero",
+                fields: [
+                  {
+                    type: "string",
+                    name: "heading",
+                    label: "Heading",
+                  },
+                  {
+                    type: "string",
+                    name: "subheading",
+                    label: "Subheading",
+                  },
+                  {
+                    type: "object",
+                    name: "actions",
+                    label: "Actions",
+                    list: true,
+                    fields: [
+                      {
+                        type: "string",
+                        name: "label",
+                        label: "Label",
+                      },
+                      {
+                        type: "string",
+                        name: "url",
+                        label: "URL",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
         name: "global",
         label: "Global Settings",
         path: "content/global",
@@ -87,4 +145,6 @@ export default defineConfig({
       },
     ],
   },
-});
+};
+
+export default defineConfig(config);

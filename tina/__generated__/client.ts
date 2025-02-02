@@ -1,5 +1,5 @@
 import { createClient } from "tinacms/dist/client";
 import { queries } from "./types";
-export const client = createClient({ cacheDir: '/home/runner/workspace/tina/__generated__/.cache/1738501806081', url: 'https://content.tinajs.io/1.5/content/203e0535-1e4c-4d5e-94bc-1bed80337d1e/github/main', token: '2d620e44761ea1ecd75c5aba5b8806681d26a0e4', queries,  });
+export const client = createClient({ cacheDir: '/home/runner/workspace/tina/__generated__/.cache/1738502379822', url: 'https://content.tinajs.io/1.5/content/9044f304-4649-4b91-9a70-7286908ab34f/github/main', token: 'ebc879ff972c75d9741b692af992b2c77613ac63', queries,  });
 export default client;
   
