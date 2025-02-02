@@ -22,7 +22,7 @@ const withMDX = createMDX({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  distDir: 'out',
+  distDir: 'static/out',
   images: {
     unoptimized: true,
   },

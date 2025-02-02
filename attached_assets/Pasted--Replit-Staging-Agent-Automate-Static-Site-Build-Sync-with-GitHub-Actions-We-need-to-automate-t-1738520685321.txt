@@ -1,0 +1,81 @@
+🚀 Replit Staging Agent: Automate Static Site Build & Sync with GitHub Actions
+We need to automate the static site build process in staging so that:
+
+✅ The latest MDX content is pulled from static/content/ before each build
+✅ The Next.js static site generator outputs to static/out/
+✅ The built site (out/) is committed back to static for deployment
+
+✅ 1. Ensure SSG Outputs to static/out/
+📌 Modify next.config.js to direct the static export correctly.
+
+js
+Copy
+Edit
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: "export", // Enable static export
+  distDir: "../static/out", // 🔹 Build the static site into `static/out/`
+  images: {
+    unoptimized: true, // Ensure compatibility with static export
+  },
+};
+
+module.exports = nextConfig;
+✅ 2. Create GitHub Action for Automated Builds
+📌 Create a GitHub Actions workflow in .github/workflows/build.yml inside staging branch.
+This will trigger a build when changes are pushed to staging, update the static site, and sync the out/ folder to static.
+
+📄 .github/workflows/build.yml
+yaml
+Copy
+Edit
+name: Deploy Static Site
+
+on:
+  push:
+    branches:
+      - staging  # Runs when `staging` is updated
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: staging
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Pull Latest Content from Static Branch
+        run: |
+          git fetch origin static
+          git checkout static
+          git pull origin static
+          git checkout staging
+
+      - name: Build Static Site
+        run: npm run build
+
+      - name: Push Static Build to Static Branch
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git checkout static
+          git pull origin static
+          git add out/
+          git commit -m "Auto-update static site build"
+          git push origin static
+✅ 3. Final Steps
+✔ Ensure static branch contains content/ for TinaCMS and out/ for the built site.
+✔ Test by pushing a change to staging → GitHub Actions should update static/out/.
+✔ Deploy from static/out/ on Vercel or your chosen host.
+
+🔥 Summary
+✅ TinaCMS edits MDX in static/content/
+✅ staging builds the static site into static/out/
+✅ GitHub Actions syncs out/ back to static for deployment
+

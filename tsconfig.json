@@ -23,10 +23,18 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-      "@/components/*": ["./components/*"],
-      "@/lib/*": ["./lib/*"],
-      "@/ui/*": ["./components/ui/*"]
+      "@/*": [
+        "./*"
+      ],
+      "@/components/*": [
+        "./components/*"
+      ],
+      "@/lib/*": [
+        "./lib/*"
+      ],
+      "@/ui/*": [
+        "./components/ui/*"
+      ]
     },
     "baseUrl": "."
   },
@@ -36,7 +44,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "dist/types/**/*.ts",
-    "out/types/**/*.ts"
+    "out/types/**/*.ts",
+    "static/out/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

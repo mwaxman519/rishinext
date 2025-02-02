@@ -14,7 +14,7 @@ export async function MDXServer({ source }: MDXServerProps) {
   }
 
   try {
-    const { content } = await compileMDX({
+    const result = await compileMDX({
       source,
       options: {
         parseFrontmatter: true,
@@ -37,11 +37,11 @@ export async function MDXServer({ source }: MDXServerProps) {
           development: process.env.NODE_ENV === 'development',
         },
       },
-    });
+    }) as unknown as { content: MDXRemoteSerializeResult };
 
     return (
       <div className="mdx-content">
-        <MDXClientRenderer source={content} />
+        <MDXClientRenderer source={result.content} />
       </div>
     );
   } catch (error) {
