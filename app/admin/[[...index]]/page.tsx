@@ -1,12 +1,12 @@
 "use client";
 
 import { TinaManager } from "tinacms";
-import { TinaManagementProvider } from "tinacms/dist/admin";
+import { TinaCMS } from "tinacms";
 
 export default function AdminPage() {
   return (
-    <TinaManagementProvider>
+    <TinaCMS>
       <TinaManager />
-    </TinaManagementProvider>
+    </TinaCMS>
   );
 }

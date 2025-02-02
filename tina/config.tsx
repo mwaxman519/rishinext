@@ -1,5 +1,4 @@
 import { defineConfig } from "tinacms";
-import type { TinaConfiguration } from "tinacms";
 
 // Get environment variables
 const branch = "static"; // Point to static branch for live editing
@@ -10,7 +9,7 @@ if (!clientId || !token) {
   throw new Error("Missing required environment variables for Tina CMS");
 }
 
-const config: TinaConfiguration = {
+export default defineConfig({
   branch,
   clientId,
   token,
@@ -73,6 +72,4 @@ const config: TinaConfiguration = {
       },
     ],
   },
-};
-
-export default defineConfig(config);
+});
