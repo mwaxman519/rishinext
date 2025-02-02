@@ -1,6 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { compileMDX } from 'next-mdx-remote/rsc';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import { components } from '@/components/mdx-components';
 
 export type StaticData = {
   slug: string;
@@ -16,6 +20,36 @@ const POSTS_DIRECTORY = path.join(CONTENT_DIRECTORY, 'posts');
 const PAGES_DIRECTORY = path.join(CONTENT_DIRECTORY, 'pages');
 
 /**
+ * Process MDX content with frontmatter
+ */
+async function processMDXContent(source: string) {
+  const { data, content } = matter(source);
+
+  const { content: compiledContent } = await compileMDX({
+    source: content,
+    options: {
+      mdxOptions: {
+        rehypePlugins: [
+          rehypeSlug,
+          [rehypeAutolinkHeadings, {
+            behavior: 'wrap',
+            properties: {
+              className: ['anchor']
+            }
+          }]
+        ],
+      }
+    },
+    components
+  });
+
+  return {
+    frontmatter: data,
+    content: compiledContent
+  };
+}
+
+/**
  * Get data from MDX files in a specific directory
  */
 async function getMDXData(directory: string): Promise<StaticData[]> {
@@ -27,29 +61,30 @@ async function getMDXData(directory: string): Promise<StaticData[]> {
 
   try {
     const filenames = fs.readdirSync(directory);
-    const items = filenames
-      .filter(filename => filename.endsWith('.mdx'))
-      .map(filename => {
-        const filePath = path.join(directory, filename);
-        const fileContents = fs.readFileSync(filePath, 'utf8');
-        const { data, content } = matter(fileContents);
+    const items = await Promise.all(
+      filenames
+        .filter(filename => filename.endsWith('.mdx'))
+        .map(async filename => {
+          const filePath = path.join(directory, filename);
+          const fileContents = fs.readFileSync(filePath, 'utf8');
+          const { frontmatter, content } = await processMDXContent(fileContents);
 
-        return {
-          slug: filename.replace(/\.mdx$/, ''),
-          title: data.title || 'Untitled',
-          description: data.description || '',
-          content,
-          date: data.date || null,
-        };
-      })
-      .sort((a, b) => {
-        if (a.date && b.date) {
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
-        }
-        return 0;
-      });
+          return {
+            slug: filename.replace(/\.mdx$/, ''),
+            title: frontmatter.title || 'Untitled',
+            description: frontmatter.description || '',
+            content,
+            date: frontmatter.date || null,
+          };
+        })
+    );
 
-    return items;
+    return items.sort((a, b) => {
+      if (a.date && b.date) {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      }
+      return 0;
+    });
   } catch (error) {
     console.error(`Error reading directory ${directory}:`, error);
     return [];
