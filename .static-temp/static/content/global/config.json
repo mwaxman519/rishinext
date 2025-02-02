@@ -1,0 +1,7 @@
+{
+  "site": {
+    "title": "Documentation Portal",
+    "description": "Modern documentation with Next.js and MDX",
+    "baseUrl": "https://docs.example.com"
+  }
+}
