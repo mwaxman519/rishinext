@@ -23,7 +23,7 @@ const withMDX = createMDX({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   ...(process.env.NODE_ENV === 'production' ? {
-    output: 'export',
+    output: 'export', // Enables static site generation
     distDir: 'static/out',
   } : {}),
   images: {

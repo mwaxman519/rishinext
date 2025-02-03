@@ -5,40 +5,34 @@ A cutting-edge Next.js application designed for flexible and efficient web devel
 ## Features
 
 - Next.js 15.1.6 with App Router
-- Automated static builds
-- Multi-branch deployment strategy
-- Webhook-triggered builds
-- Comprehensive logging
+- MDX-based content management
+- Multi-branch deployment strategy:
+  - `staging`: Development and content schema changes
+  - `static`: Content storage and editing
+  - `main`: Production-ready code
+- Automated content sync between branches
 - Build status notifications (Slack & Teams)
 - TypeScript support
 - Tailwind CSS styling
 - ShadCN UI components
 
-## Prerequisites
+## Content Management Workflow
 
-Before setting up this template, ensure you have:
+### Branch Structure
+- `staging`: Development branch for code changes and content schema updates
+- `static`: Content storage branch where all MDX content lives
+- `main`: Production-ready application code
 
-1. A GitHub account with repository creation permissions
-2. A [Vercel](https://vercel.com) account
-   - Connected to your GitHub account
-   - Sufficient deployment credits
-3. A [Replit](https://replit.com) account
-   - With Git integration enabled
-   - Node.js development environment access
+### Content Editing
+1. Edit MDX files directly in the `content/` directory on the `static` branch
+2. Changes trigger automatic builds via GitHub webhooks
+3. Content is automatically synced between branches using our built-in services
 
-## Development Workflow & User Roles
-
-### Developers
-Developers work with the codebase:
-1. Make code changes in the `staging` branch
+### Development Workflow
+1. Make code changes in `staging`
 2. Test changes locally using `npm run dev`
-3. Create pull requests for review
-4. Merge approved changes to `main`
-
-### Branch Purposes
-- `main`: Application code
-- `staging`: Development and testing
-- `static`: Built static files ready for deployment
+3. Content changes from `static` are automatically merged during builds
+4. Deployment scripts handle branch synchronization
 
 ## Security Considerations
 

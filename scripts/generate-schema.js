@@ -1,2 +1,1 @@
-// This file has been deprecated and will be removed
-// TinaCMS schema generation is no longer needed as we've moved to direct MDX handling
+// This file is removed as we're using direct MDX content management
