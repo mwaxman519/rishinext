@@ -4,6 +4,16 @@ import { cn } from '@/lib/utils';
 import type { MDXComponents } from 'mdx/types';
 import React from 'react';
 import { MDXImage } from './mdx-image';
+import { Alert, AlertDescription } from "@/components/ui/alert";
+
+// Callout component for MDX content
+const Callout = ({ type, text }: { type: 'info' | 'warning' | 'success' | 'error', text: string }) => {
+  return (
+    <Alert variant={type}>
+      <AlertDescription>{text}</AlertDescription>
+    </Alert>
+  );
+};
 
 export const components: MDXComponents = {
   h1: ({ className, ...props }) => (
@@ -61,4 +71,6 @@ export const components: MDXComponents = {
       {...props}
     />
   ),
+  // Add the Callout component to our MDX components
+  Callout,
 };

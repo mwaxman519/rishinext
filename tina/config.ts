@@ -3,7 +3,7 @@ import { contentBlockSchema } from "../lib/schemas/blocks";
 
 // Configuration for TinaCMS
 export default defineConfig({
-  branch: process.env.NEXT_PUBLIC_TINA_BRANCH || "static", // Content lives in the static branch
+  branch: process.env.NEXT_PUBLIC_TINA_BRANCH || "main", // Default to main branch if not specified
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID, // Get this from Tina Cloud
   token: process.env.TINA_TOKEN, // Get this from Tina Cloud
 
@@ -12,7 +12,6 @@ export default defineConfig({
     publicFolder: "public",
   },
 
-  // Configure media storage to use Cloudinary
   media: {
     tina: {
       publicFolder: "public",
@@ -20,7 +19,6 @@ export default defineConfig({
     },
   },
 
-  // Schema configuration
   schema: {
     collections: [
       {
@@ -96,6 +94,14 @@ export default defineConfig({
               contentBlockSchema
             ],
           },
+          {
+            type: "string",
+             name: "description",
+             label: "Description",
+             ui: {
+               component: "textarea",
+             },
+           },
         ],
       },
     ],

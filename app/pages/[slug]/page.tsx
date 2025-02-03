@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { MDXContent } from '@/components/mdx/mdx-content';
 import { MDXRemote } from '@/components/mdx/mdx-remote';
 import matter from 'gray-matter';
 
@@ -53,9 +52,7 @@ export default async function Page({ params }: PageProps) {
           {data.description && (
             <p className="text-xl text-muted-foreground">{data.description}</p>
           )}
-          <MDXContent>
-            <MDXRemote source={content} />
-          </MDXContent>
+          <MDXRemote source={content} />
         </div>
       </div>
     );
@@ -86,12 +83,9 @@ export async function generateStaticParams() {
       }
     }
 
-    const params = Array.from(allFiles).map(file => ({
+    return Array.from(allFiles).map(file => ({
       slug: file.replace(/\.mdx$/, '')
     }));
-
-    console.log('[MDX Debug] Generated static params:', params);
-    return params;
   } catch (error) {
     console.error('[MDX Debug] Failed to generate static params:', error);
     return [];
