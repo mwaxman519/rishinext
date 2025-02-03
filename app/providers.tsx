@@ -7,8 +7,7 @@ import { URLCleaner } from "@/components/url-cleaner";
 import { LayoutProvider } from "@/components/layout/layout-context";
 import { useAutoSave } from "@/hooks/use-auto-commit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { TinaProvider } from "tinacms/dist/react";
-import { TinaCMS } from "tinacms";
+import { TinaCMS, TinaProvider } from "tinacms";
 
 interface ProvidersProps {
   children: ReactNode;

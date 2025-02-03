@@ -16,16 +16,13 @@ const withMDX = createMDX({
         }
       }]
     ],
-    providerImportSource: "@mdx-js/react"
+    providerImportSource: "@mdx-js/react",
   },
 });
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  ...(process.env.NODE_ENV === 'production' ? {
-    output: 'export',
-    distDir: 'static/out',
-  } : {}),
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   images: {
     unoptimized: true,
     domains: [
@@ -34,7 +31,6 @@ const nextConfig = {
     ],
   },
   reactStrictMode: true,
-  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   experimental: {
     mdxRs: false,
   },
