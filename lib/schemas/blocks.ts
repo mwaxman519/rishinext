@@ -8,6 +8,9 @@ export const contentBlockSchema: Template = {
       content: "Your content here",
       variant: "default"
     },
+    itemProps: (item) => ({
+      label: item?.content?.substring(0, 20) + "..."
+    }),
   },
   fields: [
     {
@@ -15,6 +18,44 @@ export const contentBlockSchema: Template = {
       name: "content",
       label: "Content",
       required: true,
+      templates: [
+        {
+          name: "CalloutBlock",
+          label: "Callout",
+          fields: [
+            {
+              name: "type",
+              label: "Type",
+              type: "string",
+              options: ["info", "warning", "error"],
+            },
+            {
+              name: "content",
+              label: "Content",
+              type: "rich-text",
+            },
+          ],
+        },
+        {
+          name: "CodeBlock",
+          label: "Code Block",
+          fields: [
+            {
+              name: "language",
+              label: "Language",
+              type: "string",
+            },
+            {
+              name: "code",
+              label: "Code",
+              type: "string",
+              ui: {
+                component: "textarea",
+              },
+            },
+          ],
+        }
+      ]
     },
     {
       type: "string",

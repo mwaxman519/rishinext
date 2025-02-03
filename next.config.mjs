@@ -28,11 +28,21 @@ const nextConfig = {
   } : {}),
   images: {
     unoptimized: true,
+    domains: ['assets.tina.io'], // Allow Tina CMS image domains
   },
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   experimental: {
     mdxRs: false,
+  },
+  // Add support for TinaCMS local development
+  async rewrites() {
+    return [
+      {
+        source: '/admin',
+        destination: '/admin/index.html',
+      },
+    ];
   },
 };
 
