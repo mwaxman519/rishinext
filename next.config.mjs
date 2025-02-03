@@ -37,7 +37,6 @@ const nextConfig = {
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   experimental: {
     mdxRs: false,
-    appDir: true,
   },
   async rewrites() {
     return [
@@ -50,7 +49,7 @@ const nextConfig = {
         destination: '/admin/:path*',
       }
     ];
-  },
+  }
 };
 
 export default withMDX(nextConfig);
