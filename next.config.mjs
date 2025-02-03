@@ -26,7 +26,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
     domains: [
-      'assets.tina.io',
       'res.cloudinary.com'
     ],
   },
@@ -34,18 +33,8 @@ const nextConfig = {
   experimental: {
     mdxRs: false,
   },
-  async rewrites() {
-    return [
-      {
-        source: '/admin',
-        destination: '/admin/index.html',
-      },
-      {
-        source: '/admin/:path*',
-        destination: '/admin/:path*',
-      }
-    ];
-  }
+  output: 'export',
+  distDir: 'out'
 };
 
 export default withMDX(nextConfig);

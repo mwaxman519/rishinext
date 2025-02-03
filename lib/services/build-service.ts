@@ -26,19 +26,19 @@ type BuildConfig = {
   preserveFiles?: string[];
 };
 
-type BranchType = 'main' | 'cms' | 'staging';
+type BranchType = 'main' | 'staging' | 'static';
 
 /**
  * BuildService handles all build-related operations
  * for different deployment branches
  */
 export class BuildService {
-  private static lastExportTimestamp: string | null = null;
+  private static lastBuildTimestamp: string | null = null;
 
   private static readonly BRANCHES = {
-    MAIN: 'main' as const,      // Main branch
-    CMS: 'cms' as const,        // Static site output
-    STAGING: 'staging' as const // Development
+    MAIN: 'main' as const,         // Production branch
+    STATIC: 'static' as const,     // Static content branch
+    STAGING: 'staging' as const    // Development branch
   };
 
   private static readonly BUILD_CONFIGS: Record<BranchType, BuildConfig> = {
@@ -47,10 +47,11 @@ export class BuildService {
       outputDir: '.next',
       requiredFiles: ['server/pages', 'static/'],
     },
-    [BuildService.BRANCHES.CMS]: {
+    [BuildService.BRANCHES.STATIC]: {
       command: 'next build && next export',
       outputDir: 'out',
       requiredFiles: ['index.html', '_next/static'],
+      preserveFiles: ['content/']
     },
     [BuildService.BRANCHES.STAGING]: {
       command: 'next build',
@@ -162,6 +163,16 @@ export class BuildService {
         return failureResult;
       }
 
+      // If we're on the static branch, push the static build to GitHub
+      if (branch === BuildService.BRANCHES.STATIC) {
+        const pushResult = await GitHubService.pushStaticBuild(branch);
+        if (!pushResult.success) {
+          throw new Error(`Failed to push static build: ${pushResult.message}`);
+        }
+      }
+
+      this.lastBuildTimestamp = timestamp;
+
       const successResult = {
         success: true,
         message: `Build completed successfully for ${branch} branch`,
@@ -201,74 +212,7 @@ export class BuildService {
     }
   }
 
-  /**
-   * Handles static export to CMS branch
-   */
-  static async handleExport(): Promise<BuildResult> {
-    const timestamp = new Date().toISOString();
-
-    try {
-      await GitHubService.pullLatestContent();
-
-      const buildResult = await this.handleBuild(BuildService.BRANCHES.CMS);
-      if (!buildResult.success) {
-        throw new Error('Build failed before export');
-      }
-
-      const pushResult = await GitHubService.pushStaticBuild(BuildService.BRANCHES.CMS);
-      if (!pushResult.success) {
-        throw new Error(pushResult.message);
-      }
-
-      const cleanupResult = await CleanupService.cleanupBuild(BuildService.BRANCHES.CMS);
-      if (!cleanupResult.success) {
-        console.warn(`Cleanup had issues: ${cleanupResult.message}`);
-      }
-
-      this.lastExportTimestamp = timestamp;
-
-      const successResult = {
-        success: true,
-        message: 'Static export completed successfully',
-        timestamp,
-        details: 'Static files have been generated and pushed to CMS branch',
-        branch: BuildService.BRANCHES.CMS
-      };
-
-      await NotificationService.sendBuildNotification({
-        status: 'success',
-        title: 'Static Export Completed',
-        message: 'Static export process completed successfully',
-        branch: BuildService.BRANCHES.CMS,
-        timestamp,
-        details: ['Static files generated and pushed to CMS branch']
-      });
-
-      return successResult;
-    } catch (error) {
-      const errorMessage = `Export error: ${error instanceof Error ? error.message : 'Unknown error'}`;
-      console.error(errorMessage);
-
-      await NotificationService.sendBuildNotification({
-        status: 'failure',
-        title: 'Static Export Failed',
-        message: 'Error during static export process',
-        branch: BuildService.BRANCHES.CMS,
-        timestamp,
-        details: [errorMessage]
-      });
-
-      return {
-        success: false,
-        message: 'Export process failed',
-        timestamp,
-        details: errorMessage,
-        branch: BuildService.BRANCHES.CMS
-      };
-    }
-  }
-
-  static getLastExportTimestamp(): string | null {
-    return this.lastExportTimestamp;
+  static getLastBuildTimestamp(): string | null {
+    return this.lastBuildTimestamp;
   }
 }

@@ -24,7 +24,7 @@ A cutting-edge Next.js application designed for flexible and efficient web devel
 - `main`: Production-ready application code
 
 ### Content Editing
-1. Edit MDX files directly in the `content/` directory on the `static` branch
+1. Edit MDX files directly in the `content/` directory
 2. Changes trigger automatic builds via GitHub webhooks
 3. Content is automatically synced between branches using our built-in services
 
