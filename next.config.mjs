@@ -16,7 +16,6 @@ const withMDX = createMDX({
         }
       }]
     ],
-    providerImportSource: "@mdx-js/react",
   },
 });
 
@@ -34,7 +33,8 @@ const nextConfig = {
     mdxRs: false,
   },
   output: 'export',
-  distDir: 'out'
+  distDir: 'out',
+  trailingSlash: true,
 };
 
 export default withMDX(nextConfig);
