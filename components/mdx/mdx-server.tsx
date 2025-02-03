@@ -1,7 +1,7 @@
 import { compileMDX } from 'next-mdx-remote/rsc';
-import { components } from './mdx-components';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import { MDXContent } from './mdx-content';
 
 interface MDXServerProps {
   source: string;
@@ -21,10 +21,8 @@ export async function MDXServer({ source }: MDXServerProps) {
   }
 
   try {
-    console.log('Attempting to compile MDX content...');
     const { content } = await compileMDX({
       source,
-      components,
       options: {
         mdxOptions: {
           remarkPlugins: [],
@@ -43,12 +41,7 @@ export async function MDXServer({ source }: MDXServerProps) {
       }
     });
 
-    console.log('MDX compilation successful');
-    return (
-      <div className="mdx-content">
-        {content}
-      </div>
-    );
+    return <MDXContent>{content}</MDXContent>;
   } catch (error) {
     console.error('MDX compilation error:', error);
     return (
@@ -57,7 +50,7 @@ export async function MDXServer({ source }: MDXServerProps) {
         <p className="text-sm text-muted-foreground">
           {error instanceof Error ? error.message : 'An unknown error occurred while rendering content'}
         </p>
-        <pre className="mt-2 p-2 bg-muted rounded text-xs">
+        <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-auto">
           {error instanceof Error ? error.stack : 'No stack trace available'}
         </pre>
       </div>

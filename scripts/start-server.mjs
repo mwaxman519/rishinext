@@ -45,15 +45,16 @@ async function main() {
       }
     });
 
+    console.log('\n[Server] Waiting for Next.js server to be ready...');
     try {
       await waitForServer();
-      console.log('Server started successfully!');
+      console.log('[Server] Next.js server started successfully on port 3000!');
     } catch (e) {
-      console.error('Server failed health check:', e);
+      console.error('[Server] Server failed health check:', e);
       process.exit(1);
     }
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error('[Server] Failed to start server:', error);
     process.exit(1);
   }
 }
@@ -63,6 +64,6 @@ process.on('SIGTERM', cleanup);
 
 // Run the main function
 main().catch(error => {
-  console.error('Fatal error:', error);
+  console.error('[Server] Fatal error:', error);
   process.exit(1);
 });

@@ -58,7 +58,7 @@ export const components: MDXComponents = {
       {...props}
     />
   ),
-  img: MDXImage as MDXComponents['img'],
+  img: MDXImage,
   pre: ({ className, ...props }) => (
     <pre
       className={cn("mb-4 mt-6 overflow-x-auto rounded-lg bg-black py-4", className)}
@@ -71,6 +71,5 @@ export const components: MDXComponents = {
       {...props}
     />
   ),
-  // Add the Callout component to our MDX components
   Callout,
 };

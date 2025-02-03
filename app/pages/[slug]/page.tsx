@@ -2,8 +2,7 @@ import { notFound } from 'next/navigation';
 import { promises as fs } from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import { MDXWrapper } from '@/components/mdx/mdx-wrapper';
-import { MDXRemote } from '@/components/mdx/mdx-remote';
+import { MDXServer } from '@/components/mdx/mdx-server';
 
 interface PageProps {
   params: {
@@ -49,7 +48,7 @@ export default async function Page({ params }: PageProps) {
           {data.description && (
             <p className="text-xl text-muted-foreground">{data.description}</p>
           )}
-          <MDXRemote source={source} />
+          <MDXServer source={source} />
         </div>
       </div>
     );
