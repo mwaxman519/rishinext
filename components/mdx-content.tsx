@@ -1,4 +1,4 @@
-import { compileMDX } from 'next-mdx-remote/rsc';
+import { MDX } from '@next/mdx';
 import { components } from './mdx-components';
 import { cn } from "@/lib/utils";
 
@@ -8,17 +8,6 @@ interface MDXContentProps {
 }
 
 export async function MDXContent({ source, className }: MDXContentProps) {
-  const { content } = await compileMDX({
-    source,
-    components,
-    options: {
-      mdxOptions: {
-        remarkPlugins: [],
-        rehypePlugins: [],
-      }
-    }
-  });
-
   return (
     <div className={cn(
       "prose dark:prose-invert max-w-none",
@@ -26,7 +15,7 @@ export async function MDXContent({ source, className }: MDXContentProps) {
       "prose-a:underline prose-a:decoration-primary/50 hover:prose-a:decoration-primary",
       className
     )}>
-      {content}
+      <MDX components={components}>{source}</MDX>
     </div>
   );
 }

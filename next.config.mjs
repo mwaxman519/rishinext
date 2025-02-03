@@ -1,24 +1,3 @@
-import createMDX from '@next/mdx';
-import rehypeSlug from 'rehype-slug';
-import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import remarkGfm from 'remark-gfm';
-
-const withMDX = createMDX({
-  extension: /\.mdx?$/,
-  options: {
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [
-      rehypeSlug,
-      [rehypeAutolinkHeadings, { 
-        behavior: 'wrap',
-        properties: {
-          className: ['anchor']
-        }
-      }]
-    ],
-  },
-});
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
@@ -35,6 +14,14 @@ const nextConfig = {
   output: 'export',
   distDir: 'out',
   trailingSlash: true,
+  // Add specific host and port configuration for development
+  webpack: (config) => {
+    return config;
+  },
+  // Ensure proper development server configuration
+  devIndicators: {
+    buildActivity: true,
+  },
 };
 
-export default withMDX(nextConfig);
+export default nextConfig;

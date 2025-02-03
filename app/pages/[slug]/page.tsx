@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { promises as fs } from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import { MDXContent } from '@/components/mdx-content';
+import { MDX } from '@next/mdx';
 
 interface PageProps {
   params: {
@@ -48,7 +48,7 @@ export default async function Page({ params }: PageProps) {
           {data.description && (
             <p className="text-xl text-muted-foreground">{data.description}</p>
           )}
-          <MDXContent source={content} />
+          <MDX>{content}</MDX>
         </div>
       </div>
     );
