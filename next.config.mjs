@@ -16,7 +16,6 @@ const withMDX = createMDX({
         }
       }]
     ],
-    providerImportSource: "@mdx-js/react",
   },
 });
 
