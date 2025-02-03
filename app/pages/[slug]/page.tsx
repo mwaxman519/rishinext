@@ -2,7 +2,8 @@ import { notFound } from 'next/navigation';
 import { promises as fs } from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import { MDX } from '@next/mdx';
+import { MDXWrapper } from '@/components/mdx/mdx-wrapper';
+import { MDXRemote } from '@/components/mdx/mdx-remote';
 
 interface PageProps {
   params: {
@@ -39,7 +40,7 @@ export default async function Page({ params }: PageProps) {
       return null;
     }
 
-    const { content, data } = matter(source);
+    const { data } = matter(source);
 
     return (
       <div className="container mx-auto py-10">
@@ -48,7 +49,7 @@ export default async function Page({ params }: PageProps) {
           {data.description && (
             <p className="text-xl text-muted-foreground">{data.description}</p>
           )}
-          <MDX>{content}</MDX>
+          <MDXRemote source={source} />
         </div>
       </div>
     );
