@@ -1,0 +1,42 @@
+---
+title: MDX Test Page
+description: A test page to verify MDX functionality
+date: 2024-02-03
+---
+
+# MDX Test Page
+
+This is a test page to verify our MDX system functionality. Updated for sync testing.
+
+<Callout type="info" text="Testing bi-directional sync functionality" />
+
+## Features Testing
+
+1. Basic Markdown Support
+2. Custom Components Integration
+3. Code Block Rendering
+4. Image Component Support
+5. Bi-directional Sync
+
+```typescript
+// Testing code block syntax highlighting
+const testFunction = () => {
+  console.log("Testing MDX code block rendering");
+  return "Sync test successful";
+};
+```
+
+### Component Tests
+
+Testing our custom MDX components:
+
+<MDXImage 
+  src="https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg"
+  alt="Test image for sync verification"
+  width={400}
+  height={300}
+/>
+
+### Sync Verification
+
+This content should be synced between branches.
