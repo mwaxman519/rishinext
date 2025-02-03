@@ -7,7 +7,8 @@ import { URLCleaner } from "@/components/url-cleaner";
 import { LayoutProvider } from "@/components/layout/layout-context";
 import { useAutoSave } from "@/hooks/use-auto-commit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { TinaProvider, TinaCMS } from "tinacms";
+import { TinaProvider } from "tinacms/dist/react";
+import { TinaCMS } from "tinacms";
 
 interface ProvidersProps {
   children: ReactNode;
@@ -24,12 +25,16 @@ const queryClient = new QueryClient({
 
 const cms = new TinaCMS({
   enabled: true,
-  branch: "static",
+  branch: process.env.NEXT_PUBLIC_TINA_BRANCH || "static",
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID!,
   token: process.env.TINA_TOKEN,
   mediaStore: async () => {
     const pack = await import("next-tinacms-cloudinary");
     return pack.CloudinaryMediaStore;
+  },
+  build: {
+    outputFolder: "admin",
+    publicFolder: "public",
   },
 });
 
@@ -48,7 +53,7 @@ export function Providers({ children }: ProvidersProps) {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
@@ -58,7 +63,7 @@ export function Providers({ children }: ProvidersProps) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.3 }}
               >
                 <URLCleaner>{children}</URLCleaner>
               </m.div>

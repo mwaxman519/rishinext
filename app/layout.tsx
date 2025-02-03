@@ -7,8 +7,8 @@ import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'Modern Web Application',
-  description: 'A beautiful and modern web application built with Next.js',
+  title: 'Documentation Platform',
+  description: 'A modern documentation platform built with Next.js and TinaCMS',
 };
 
 interface RootLayoutProps {

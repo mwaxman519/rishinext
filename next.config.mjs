@@ -23,25 +23,32 @@ const withMDX = createMDX({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   ...(process.env.NODE_ENV === 'production' ? {
-    output: 'export', // Enables static site generation
+    output: 'export',
     distDir: 'static/out',
   } : {}),
   images: {
     unoptimized: true,
-    domains: ['assets.tina.io'], // Allow Tina CMS image domains
+    domains: [
+      'assets.tina.io',
+      'res.cloudinary.com'
+    ],
   },
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   experimental: {
     mdxRs: false,
+    appDir: true,
   },
-  // Add support for TinaCMS local development
   async rewrites() {
     return [
       {
         source: '/admin',
         destination: '/admin/index.html',
       },
+      {
+        source: '/admin/:path*',
+        destination: '/admin/:path*',
+      }
     ];
   },
 };
