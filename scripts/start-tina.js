@@ -1,1 +1,2 @@
-// This file will be removed as it was specifically for starting TinaCMS server
+// This file has been deprecated and will be removed
+// TinaCMS has been removed in favor of direct filesystem content management
