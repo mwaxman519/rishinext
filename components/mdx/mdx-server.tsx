@@ -1,6 +1,7 @@
 import { compileMDX } from 'next-mdx-remote/rsc';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import { components } from './mdx-components';
 import { MDXContent } from './mdx-content';
 
 interface MDXServerProps {
@@ -25,7 +26,6 @@ export async function MDXServer({ source }: MDXServerProps) {
       source,
       options: {
         mdxOptions: {
-          remarkPlugins: [],
           rehypePlugins: [
             rehypeSlug,
             [rehypeAutolinkHeadings, { 
@@ -50,7 +50,7 @@ export async function MDXServer({ source }: MDXServerProps) {
         <p className="text-sm text-muted-foreground">
           {error instanceof Error ? error.message : 'An unknown error occurred while rendering content'}
         </p>
-        <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-auto">
+        <pre className="mt-2 p-2 bg-muted rounded text-xs">
           {error instanceof Error ? error.stack : 'No stack trace available'}
         </pre>
       </div>

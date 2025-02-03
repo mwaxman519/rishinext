@@ -27,7 +27,7 @@ export function MDXRemote({ source }: MDXRemoteProps) {
       <div className="mdx-content prose dark:prose-invert max-w-none">
         <NextMDXRemote
           source={source}
-          components={components as any}
+          components={components}
           options={{
             parseFrontmatter: true,
             mdxOptions: {

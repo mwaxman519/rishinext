@@ -3,6 +3,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { MDXServer } from '@/components/mdx/mdx-server';
+import { MDXWrapper } from '@/components/mdx/mdx-wrapper';
 
 interface PageProps {
   params: {
@@ -12,7 +13,6 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const { slug } = params;
-  console.log(`[MDX Debug] Attempting to render page for slug: ${slug}`);
 
   try {
     const contentPaths = [
@@ -25,16 +25,13 @@ export default async function Page({ params }: PageProps) {
     for (const contentPath of contentPaths) {
       try {
         source = await fs.readFile(contentPath, 'utf-8');
-        console.log(`[MDX Debug] Successfully loaded content from: ${contentPath}`);
         break;
       } catch (error) {
-        console.log(`[MDX Debug] Could not load content from: ${contentPath}`);
         continue;
       }
     }
 
     if (!source) {
-      console.error(`[MDX Debug] No MDX file found for slug: ${slug}`);
       notFound();
       return null;
     }
@@ -42,18 +39,20 @@ export default async function Page({ params }: PageProps) {
     const { data } = matter(source);
 
     return (
-      <div className="container mx-auto py-10">
-        <div className="prose dark:prose-invert max-w-none">
-          <h1>{data.title}</h1>
-          {data.description && (
-            <p className="text-xl text-muted-foreground">{data.description}</p>
-          )}
-          <MDXServer source={source} />
+      <MDXWrapper>
+        <div className="container mx-auto py-10">
+          <div className="prose dark:prose-invert max-w-none">
+            <h1>{data.title}</h1>
+            {data.description && (
+              <p className="text-xl text-muted-foreground">{data.description}</p>
+            )}
+            <MDXServer source={source} />
+          </div>
         </div>
-      </div>
+      </MDXWrapper>
     );
   } catch (error) {
-    console.error(`[MDX Debug] Failed to render content for slug: ${slug}`, error);
+    console.error(`Failed to render content for slug: ${slug}`, error);
     notFound();
     return null;
   }
@@ -72,9 +71,7 @@ export async function generateStaticParams() {
       const files = await fs.readdir(contentPath);
       const mdxFiles = files.filter(file => file.endsWith('.mdx'));
       mdxFiles.forEach(file => allFiles.add(file));
-      console.log(`[MDX Debug] Found MDX files in ${contentPath}:`, mdxFiles);
     } catch (error) {
-      console.warn(`[MDX Debug] Could not read directory ${contentPath}`, error);
       continue;
     }
   }

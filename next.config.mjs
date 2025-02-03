@@ -1,4 +1,3 @@
-/** @type {import('next').NextConfig} */
 import createMDX from '@next/mdx';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
@@ -32,16 +31,7 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     mdxRs: false,
-  },
-  output: 'export',
-  distDir: 'out',
-  trailingSlash: true,
-  webpack: (config) => {
-    return config;
-  },
-  devIndicators: {
-    buildActivity: true,
-  },
+  }
 };
 
 export default withMDX(nextConfig);

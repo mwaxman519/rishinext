@@ -15,6 +15,7 @@ const Callout = ({ type, text }: { type: 'info' | 'warning' | 'success' | 'error
   );
 };
 
+// Define all MDX components as client components
 export const components: MDXComponents = {
   h1: ({ className, ...props }) => (
     <h1 

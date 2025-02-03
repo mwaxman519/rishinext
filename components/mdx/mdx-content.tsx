@@ -1,8 +1,8 @@
 'use client';
 
 import { cn } from "@/lib/utils";
-import { components } from './mdx-components';
 import { MDXProvider } from '@mdx-js/react';
+import { components } from './mdx-components';
 
 interface MDXContentProps {
   children: React.ReactNode;
