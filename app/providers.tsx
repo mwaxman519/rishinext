@@ -22,9 +22,10 @@ const queryClient = new QueryClient({
   },
 });
 
+// Configure TinaCMS instance
 const cms = new TinaCMS({
   enabled: true,
-  branch: process.env.NEXT_PUBLIC_TINA_BRANCH || "static",
+  branch: process.env.NEXT_PUBLIC_TINA_BRANCH || "static", // Align with config.ts
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID!,
   token: process.env.TINA_TOKEN,
   mediaStore: async () => {

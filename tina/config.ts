@@ -3,7 +3,7 @@ import { contentBlockSchema } from "../lib/schemas/blocks";
 
 // Configuration for TinaCMS
 export default defineConfig({
-  branch: process.env.NEXT_PUBLIC_TINA_BRANCH || "main", // Default to main branch if not specified
+  branch: process.env.NEXT_PUBLIC_TINA_BRANCH || "static", // Change default to static for content management
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID, // Get this from Tina Cloud
   token: process.env.TINA_TOKEN, // Get this from Tina Cloud
 
@@ -96,12 +96,12 @@ export default defineConfig({
           },
           {
             type: "string",
-             name: "description",
-             label: "Description",
-             ui: {
-               component: "textarea",
-             },
-           },
+            name: "description",
+            label: "Description",
+            ui: {
+              component: "textarea",
+            },
+          },
         ],
       },
     ],
